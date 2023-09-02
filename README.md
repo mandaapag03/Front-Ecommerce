@@ -1,4 +1,4 @@
-# Front-Lab
+# Front-Ecommerce
 Front-end do sistema de reserva de laboratório da matéria de Full Stack.
 - Grupo:
 - Amanda Pagani Lima - 2200564
