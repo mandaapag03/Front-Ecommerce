@@ -1,0 +1,19 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  height: 100vh;
+  background: linear-gradient(#AB8262, #AB8262);
+  background-image: url('componentes/Imgs/dogs1.jpg'); /* Caminho relativo para a imagem */
+  background-size: cover; /* Ajusta o tamanho da imagem para cobrir o contêiner */
+  background-repeat: no-repeat; /* Evita a repetição da imagem de fundo */
+  /* Outros estilos do contêiner, como altura, largura, etc. */
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
