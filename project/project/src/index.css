@@ -7,10 +7,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
   height: 100vh;
   background: linear-gradient(#AB8262, #AB8262);
-  background-image: url('componentes/Imgs/dogs1.jpg'); /* Caminho relativo para a imagem */
-  background-size: cover; /* Ajusta o tamanho da imagem para cobrir o contêiner */
-  background-repeat: no-repeat; /* Evita a repetição da imagem de fundo */
-  /* Outros estilos do contêiner, como altura, largura, etc. */
+  background-image: url('componentes/Imgs/dogs1.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 code {
