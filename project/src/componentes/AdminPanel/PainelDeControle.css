@@ -155,3 +155,14 @@ button#botao-salvar {
   box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.25);
 }
 
+/* Estilos para o botão com id "buscar" */
+#buscar {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  display: block; /* Para centralizar o botão */
+  margin: 0 auto; /* Centralizar horizontalmente */
+}

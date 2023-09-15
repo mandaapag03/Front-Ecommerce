@@ -13,7 +13,7 @@ body{
     width: 600px;
     background-color: #fff;
     padding-bottom: 10px;
-    max-height: 1590px;
+    max-height: 1650px;
 }
 
 .header {
@@ -56,7 +56,7 @@ body{
 }
 
 .input img {
-    margin: 0px 30px;
+    margin: 0px 100px;
 }
 
 .input input{
@@ -145,4 +145,15 @@ body{
     outline: none;
     box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.25);
 }
+
+#buscar2 {
+background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  display: block;
+  margin: 0 auto;
+  }
   
