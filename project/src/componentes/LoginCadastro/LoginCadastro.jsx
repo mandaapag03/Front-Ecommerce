@@ -8,8 +8,26 @@ import InputMask from 'react-input-mask';
 import endereco_icon from '../Imgs/endereco_icon.png'
 import telefone_icon from '../Imgs/telefone_icon.png'
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios'
 
 export const LoginCadastro = () => {
+  const handleSearchCEP = () => {
+    const cep = document.getElementById('cep').value;
+    axios.get(`https://viacep.com.br/ws/${cep}/json/`)
+      .then(response => {
+        const cepData = response.data;
+        console.log('Dados do CEP:', cepData);
+  
+        document.getElementById('logradouro').value = cepData.logradouro;
+        document.getElementById('bairro').value = cepData.bairro;
+        document.getElementById('localidade').value = cepData.localidade;
+        document.getElementById('uf').value = cepData.uf;
+  
+      })
+      .catch(error => {
+        console.error('Erro ao buscar o CEP:', error);
+      });
+  };
   const [action, setAction] = useState("Login");
 
   const navigate = useNavigate();
@@ -31,6 +49,7 @@ export const LoginCadastro = () => {
               <img src={email_icon} alt="" />
               <input type="email" name="email" id="email" placeholder="Email" />
             </div>
+            
             <div className="input">
               <img src={senha_icon} alt="" />
               <input type="password" name="senha" id="senha" placeholder="Senha" />
@@ -38,7 +57,7 @@ export const LoginCadastro = () => {
           </>
         ) : (
           <>
-            <div className="input">
+              <div className="input">
               <img src={user_icon} alt="" />
               <input type="text" name="nome" id="nome" placeholder="Nome completo" maxLength="60" />
             </div>
@@ -70,17 +89,8 @@ export const LoginCadastro = () => {
                 placeholder="(99) 99999-9999"
               />
             </div>
+
             <div className="input">
-              <img src={endereco_icon} alt="" />
-              <input type="text" name="endereco" id="endereco" placeholder="Endereço" />
-            </div>
-            {action === "Cadastre-se" && (
-              <>
-                <div className="input">
-                  <img src={endereco_icon} alt="" />
-                  <input type="text" name="numero" id="numero" placeholder="Número" />
-                </div>
-                <div className="input">
                   <img src={endereco_icon} alt="" />
                   <InputMask
                     type="text"
@@ -90,27 +100,39 @@ export const LoginCadastro = () => {
                     placeholder="CEP"
                   />
                 </div>
-                <div className="input">
+                <button
+                  id="buscar2"
+                  onClick={handleSearchCEP}
+                  >
+                  Buscar
+                  </button>
+             <div className="input">
                   <img src={endereco_icon} alt="" />
-                  <input type="text" name="complemento" id="complemento" placeholder="Complemento" />
+                  <input type="text" name="logradouro" id="logradouro" placeholder="Logradouro" />
                 </div>
                 <div className="input">
                   <img src={endereco_icon} alt="" />
                   <input type="text" name="bairro" id="bairro" placeholder="Bairro" />
                 </div>
+                  <div className="input">
+                    <img src={endereco_icon} alt="" />
+                    <input type="text" name="complemento" id="complemento" placeholder="Complemento" />
+                  </div>
                 <div className="input">
                   <img src={endereco_icon} alt="" />
-                  <input type="text" name="cidade" id="cidade" placeholder="Cidade" />
+                  <input type="text" name="localidade" id="localidade" placeholder="Localidade" />
                 </div>
                 <div className="input">
                   <img src={endereco_icon} alt="" />
-                  <select name="uf" id="uf" className="custom-select">
-                    <option value="">Selecione o UF</option>
-                    <option value="SP">SP</option>
-                    <option value="RJ">RJ</option>
-                    <option value="MG">MG</option>
-                  </select>
+                  <input type="text" name="uf" id="uf" placeholder="UF" />
                 </div>
+            {action === "Cadastre-se" && (
+              <>
+                <div className="input">
+                  <img src={endereco_icon} alt="" />
+                  <input type="text" name="numero" id="numero" placeholder="Número" />
+                </div>
+              
               </>
             )}
           </>

@@ -9,6 +9,7 @@ import CurrencyInput from 'react-currency-masked-input';
 
 
 function App() {
+  
   const columns = [
     {
       name: "Id",
