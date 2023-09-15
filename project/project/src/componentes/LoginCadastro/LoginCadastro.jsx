@@ -65,7 +65,7 @@ export const LoginCadastro = () => {
             </div>
             <div className="input">
               <img src={endereco_icon} alt="" />
-              <input type="text" name="endereco" id="endereco" placeholder="Endereço completo" />
+              <input type="text" name="endereco" id="endereco" placeholder="Endereço" />
             </div>
             {action === "Cadastre-se" && (
               <>
