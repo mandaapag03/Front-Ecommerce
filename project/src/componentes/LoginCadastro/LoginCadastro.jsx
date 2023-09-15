@@ -7,9 +7,16 @@ import cpf_icon from '../Imgs/cpf_icon.png';
 import InputMask from 'react-input-mask';
 import endereco_icon from '../Imgs/endereco_icon.png'
 import telefone_icon from '../Imgs/telefone_icon.png'
+import { useNavigate } from 'react-router-dom';
 
 export const LoginCadastro = () => {
   const [action, setAction] = useState("Login");
+
+  const navigate = useNavigate();
+
+  const handlePainelDeControleClick = () => {
+    navigate('/PainelDeControle');
+  };
 
   return (
     <div className='container'>
@@ -87,6 +94,23 @@ export const LoginCadastro = () => {
                   <img src={endereco_icon} alt="" />
                   <input type="text" name="complemento" id="complemento" placeholder="Complemento" />
                 </div>
+                <div className="input">
+                  <img src={endereco_icon} alt="" />
+                  <input type="text" name="bairro" id="bairro" placeholder="Bairro" />
+                </div>
+                <div className="input">
+                  <img src={endereco_icon} alt="" />
+                  <input type="text" name="cidade" id="cidade" placeholder="Cidade" />
+                </div>
+                <div className="input">
+                  <img src={endereco_icon} alt="" />
+                  <select name="uf" id="uf" className="custom-select">
+                    <option value="">Selecione o UF</option>
+                    <option value="SP">SP</option>
+                    <option value="RJ">RJ</option>
+                    <option value="MG">MG</option>
+                  </select>
+                </div>
               </>
             )}
           </>
@@ -106,11 +130,12 @@ export const LoginCadastro = () => {
           <div className="submit" onClick={() => { setAction("Cadastre-se") }}>Cadastrar</div>
         )}
         {action === "Cadastre-se" ? null : (
-          <div className="submit" onClick={() => { setAction("Login") }}>Login</div>
+          <div className="submit" onClick={handlePainelDeControleClick}>Login</div>
         )}
       </div>
     </div>
   );
 };
+
 
 export default LoginCadastro;

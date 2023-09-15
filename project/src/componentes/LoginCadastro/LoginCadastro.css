@@ -1,3 +1,10 @@
+body{
+    background: linear-gradient(#AB8262, #AB8262);
+    background-image: url('../Imgs/dogs1.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
 .container {
     display: flex;
     flex-direction: column;
@@ -6,7 +13,7 @@
     width: 600px;
     background-color: #fff;
     padding-bottom: 10px;
-    max-height: 1250px;
+    max-height: 1590px;
 }
 
 .header {
@@ -109,5 +116,33 @@
 .sign-up span{
     color: #AB8262;
     cursor: pointer;
+}
+
+.custom-select {
+    display: block;
+    width: 40%;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #EAEAEA;
+    background-clip: padding-box;
+    border: none;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.custom-select option {
+    color: #000000;
+    background-color: #fff;
+    border: none;
+}
+
+.custom-select:focus,
+.custom-select:hover {
+    border-color: #000000;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.25);
 }
   

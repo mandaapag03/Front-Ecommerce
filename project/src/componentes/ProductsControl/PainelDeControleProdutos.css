@@ -1,0 +1,110 @@
+/* body{
+  background: linear-gradient(#AB8262, #AB8262);
+} */
+
+.container {
+    width: 1000px;
+    border: rgb(0, 0, 0) 1px solid;
+    border-radius: 3%;
+  }
+  
+  .custom-table-container{
+    border-radius: 3%;
+  }
+  
+  .action-button-edit {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    background-color: #ffb25a;
+  }
+  
+  .action-button-ban {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    background-color: #ff5a5f;
+  }
+  
+  .action-button-ban:hover {
+    background-color: #bb272c;
+    color: white;
+  }
+  
+  .action-button-edit:hover {
+    background-color: #cc7320;
+    color: white;
+  }
+  
+  .action-button:focus {
+    outline: none;
+  }
+  
+  .table-title{
+    text-align: center;
+  }
+
+  #texto-filtrar{
+    align-items: center;
+    margin-left: 270px;
+  }
+  
+  button#botao-cancelar {
+    background-color: #ff5a5f;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    margin-right: 10px;
+    cursor: pointer;
+  }
+  
+  button#botao-salvar {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+  
+  .modal-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .inputs {
+    margin-top: 55px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+  }
+  
+  .input {
+    display: flex;
+    align-items: center;
+    margin: auto;
+    width: 480px;
+    height: 80px;
+    background: #eaeaea;
+    border-radius: 6px;
+  }
+  
+  .img {
+    margin: 0px 30px;
+  }
+  
+  .input input{
+    height: 50px;
+    width: 400px;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #797979;
+    font-size: 19px;
+  }
