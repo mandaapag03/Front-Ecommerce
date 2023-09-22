@@ -36,8 +36,69 @@ export const LoginCadastro = () => {
     navigate('/PainelDeControle');
   };
 
+  const [isLoading, setIsLoading] = useState(false);
+
+  //#region Cadastro de Usuário
+
+  const handleCadastro = () => {
+    setIsLoading(true);
+
+    const nome = document.getElementById('nome').value;
+    const email = document.getElementById('email').value;
+    const senha = document.getElementById('senha').value;
+    const cpf = document.getElementById('cpf').value;
+    const telefone = document.getElementById('telefone').value;
+    const cep = document.getElementById('cep').value;
+    const logradouro = document.getElementById('logradouro').value;
+    const bairro = document.getElementById('bairro').value;
+    const complemento = document.getElementById('complemento').value;
+    const localidade = document.getElementById('localidade').value;
+    const uf = document.getElementById('uf').value;
+    const numero = document.getElementById('numero').value;
+
+    const novoUsuario = {
+      cpf,
+      nomeCompleto: nome,
+      email,
+      senha,
+      telefone,
+      isActive: true,
+      tipoUsuario: 2,
+      enderecoInfo: {
+        cep,
+        logradouro,
+        numero,
+        bairro,
+        cidade: localidade,
+        uf,
+        complemento,
+      },
+    };
+    setTimeout(() => {    
+      axios.post('http://localhost:5009/api/Usuario/cadastro', novoUsuario)
+        .then(response => {
+          console.log('Cadastro realizado com sucesso!', response.data);
+          navigate('/PainelDeControle');
+        })
+        .catch(error => {
+          console.error('Erro ao cadastrar o usuário:', error);
+        })
+        .finally(() => {
+            setIsLoading(false); 
+        });
+    }, 1000);
+  };
+
+  //#endregion
+
   return (
     <div className='container'>
+      {isLoading && (
+        <div className="loading-overlay">
+          <div className="loading-spinner"></div>
+        </div>
+      )}
+
       <div className="header">
         <div className="text">{action}</div>
         <div className="underline"></div>
@@ -149,7 +210,7 @@ export const LoginCadastro = () => {
       )}
       <div className="submit-container">
         {action === "Login" ? null : (
-          <div className="submit" onClick={() => { setAction("Cadastre-se") }}>Cadastrar</div>
+          <div className="submit" onClick={handleCadastro}>Cadastrar</div>
         )}
         {action === "Cadastre-se" ? null : (
           <div className="submit" onClick={handlePainelDeControleClick}>Login</div>
