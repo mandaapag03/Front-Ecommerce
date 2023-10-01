@@ -3,7 +3,7 @@ import './PainelDeControleProdutos.css';
 import DataTable from 'react-data-table-component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faBan } from '@fortawesome/free-solid-svg-icons';
-import { faUser, faInfoCircle, faMoneyBill, faTags } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faInfoCircle, faMoneyBill, faTags, faImage } from '@fortawesome/free-solid-svg-icons';
 import Modal from 'react-modal';
 import CurrencyInput from 'react-currency-masked-input';    
 
@@ -430,6 +430,17 @@ function App() {
                     </option>
                   ))}
                 </select>
+            </div>
+            <div className="input">
+              <FontAwesomeIcon icon={faImage} className='img' />
+              <input
+                type="text"
+                name="foto"
+                id="foto"
+                placeholder="URL da Foto"
+                value={formData.foto}
+                onChange={handleInputChange}
+              />
             </div>
         </div>
 
