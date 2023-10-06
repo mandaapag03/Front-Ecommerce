@@ -21,6 +21,9 @@ const Sidebar = ({ active }) => {
   const handlePainelDeControleUsuariosClick = () => {
     navigate('/PainelDeControle');
   };
+  const handlePaginaInicialClick = () => {
+    navigate('/');
+  };
 
   const closeSidebar = () => {
     active(false);
@@ -30,7 +33,7 @@ const Sidebar = ({ active }) => {
     <Container sidebar={active ? 'active' : 'inactive'}>
       <FaTimes onClick={closeSidebar} />  
       <Content>
-        <SidebarItem Icon={FaHome} Text="Início" />
+        <SidebarItem Icon={FaHome} Text="Início" onClick={handlePaginaInicialClick} />
         <SidebarItem Icon={FaChartBar} Text="Estatísticas" />
         <SidebarItem Icon={FaUserAlt} Text="Usuários" onClick={handlePainelDeControleUsuariosClick}/>
         <SidebarItem Icon={FaShoppingCart} Text="Produtos" onClick={handlePainelDeControleProdutosClick}/>

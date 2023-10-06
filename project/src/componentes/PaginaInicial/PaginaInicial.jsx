@@ -2,10 +2,11 @@ import styles from './PaginaInicial.module.css';
 import axios from 'axios'
 import InputMask from 'react-input-mask';
 import React, { useEffect, useState } from 'react';
-import OhMyDog from '../Imgs/OhMyDog.png'
+import OhMyDog from '../Imgs/OhMyDog.jpg'
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate } from 'react-router-dom';
+import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -38,6 +39,9 @@ const ProductList = () => {
         <div className={styles.loginButton}>
           <button onClick={handleLoginClick}>Login / Cadastro</button>
         </div>
+        <div className={styles.cartButton}>
+        <FontAwesomeIcon icon={faShoppingCart} />
+      </div>
       </header>
       <div className={styles.productList}>
         {products.map((product) => (
@@ -46,6 +50,10 @@ const ProductList = () => {
             <h2>{product.nome}</h2>
             <p>{product.descricao}</p>
             <p>Preço: R${product.precoUnitario.toFixed(2)}</p>
+            <button className={styles.buybutton}>
+              <FontAwesomeIcon icon={faShoppingCart} />
+              Adicionar ao Carrinho
+            </button>
           </div>
         ))}
       </div>

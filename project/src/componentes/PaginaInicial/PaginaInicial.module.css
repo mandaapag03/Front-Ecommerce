@@ -54,8 +54,8 @@
   }
 
   .logo img {
-    max-width: 50px;
-    max-height: 50px;
+    max-width: 90px;
+    max-height: 90px;
   }
   
   .loginButton {
@@ -100,4 +100,37 @@
     border: none;
     cursor: pointer;
   }
-  
+
+  .buybutton {
+    background-color: #4CAF50;
+    color: #fff; 
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex; 
+    align-items: center;
+    margin-left: 40px;
+    margin-top: 10px;
+    text-align: center;
+    max-height: 30px;
+  }
+
+  .buybutton svg {
+    margin-right: 10px; 
+  }
+
+  .buybutton:hover {
+    background-color: #45a049;
+  }
+
+  .cartButton {
+    background-color: transparent;
+    border: none;
+    color: #AB8262;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: bold;
+    transition: color 0.3s ease;
+  }

@@ -157,28 +157,28 @@ background-color: #4caf50;
   margin: 0 auto;
 }
 
-/* Estilo para a tela de fundo opaca */
+
 .loading-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7); /* Fundo opaco com 70% de opacidade */
+    background-color: rgba(0, 0, 0, 0.7);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000; /* Ajuste a ordem z conforme necessário */
+    z-index: 1000;
   }
   
-  /* Estilo para o indicador de loading */
+ 
   .loading-spinner {
-    border: 4px solid rgba(255, 255, 255, 0.3); /* Borda transparente com 30% de opacidade */
-    border-top: 4px solid #6e482b; /* Borda superior azul */
+    border: 4px solid rgba(255, 255, 255, 0.3); 
+    border-top: 4px solid #6e482b;
     border-radius: 50%;
     width: 40px;
     height: 40px;
-    animation: spin 1s linear infinite; /* Animação de rotação */
+    animation: spin 1s linear infinite;
   }
   
   @keyframes spin {

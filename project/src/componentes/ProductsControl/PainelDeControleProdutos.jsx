@@ -32,8 +32,8 @@ function App() {
     {
       name: "Preço",
       selector: (row) => {
-        const preco = parseFloat(row.precoUnitario); // Converte para número
-        return `R$ ${preco.toFixed(2).replace('.', ',')}`; // Formata para "R$ X,XX"
+        const preco = parseFloat(row.precoUnitario);
+        return `R$ ${preco.toFixed(2).replace('.', ',')}`;
       },
     },
     {
@@ -386,7 +386,14 @@ function App() {
             <div className="input">
                 <FontAwesomeIcon icon={faUser} className='img'/>
                 {/* <input type="text" name="nome" id="nome" placeholder="Nome Produto" maxLength="60" /> */}
-                <input type="text" name="nome" id="nome" placeholder="Nome Produto" maxLength="60" value={formData.nome} onChange={handleInputChange} />
+                <input 
+                type="text" 
+                name="nome" 
+                id="nome" 
+                placeholder="Nome Produto" 
+                maxLength="60" 
+                value={formData.nome} 
+                onChange={handleInputChange} />
             </div>
             <div className="input">
                 <FontAwesomeIcon icon={faInfoCircle} className='img' />
@@ -524,6 +531,17 @@ function App() {
                   </option>
                 ))}
               </select>
+            </div>
+            <div className="input">
+              <FontAwesomeIcon icon={faImage} className='img' />
+              <input
+                type="text"
+                name="foto"
+                id="foto"
+                placeholder="URL da Foto"
+                value={editingProduct?.foto}
+                onChange={handleInputChangeEdit}
+              />
             </div>
           </div>
         </form>
