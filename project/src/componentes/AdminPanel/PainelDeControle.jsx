@@ -67,14 +67,16 @@ function App() {
     setIsLoading(true);
     try {
       const requestBody = {
-        cpf: document.getElementById('cpf').value,
-        nomeCompleto: document.getElementById('nome').value,
-        email: document.getElementById('email').value,
-        senha: document.getElementById('senha').value,
-        telefone: document.getElementById('telefone').value,
-        isActive: true,
-        tipoUsuario: 2,
-        enderecoInfo: {
+        usuario: {
+          cpf: document.getElementById('cpf').value,
+          nomeCompleto: document.getElementById('nome').value,
+          email: document.getElementById('email').value,
+          senha: document.getElementById('senha').value,
+          telefone: document.getElementById('telefone').value,
+          isActive: true,
+          tipoUsuarioId: 2,
+        },
+        endereco: {
           cep: document.getElementById('cep').value,
           logradouro: document.getElementById('logradouro').value,
           numero: document.getElementById('numero').value,
@@ -210,7 +212,7 @@ function App() {
   //#region EDIÇÃO DE USUÁRIOS
   
   const [editingUser, setEditingUser] = useState(null);
-
+  
   const handleEdit = async (row) => {
     try {
       const response = await fetch(`http://localhost:5009/api/Usuario/buscar/${row.cpf}`);
@@ -225,7 +227,6 @@ function App() {
       console.error('Erro ao buscar os dados do usuário:', error);
     }
   };
-  
   
   // const handleFieldChange = (fieldName, value) => {
   //   setEditingUser((prevUser) => ({
@@ -259,14 +260,21 @@ function App() {
   const handleSaveEdit = async () => {
     setIsLoading(true);
     try {
+      const updatedUserData = {
+        usuario: {
+          ...editingUser.usuario,
+        },
+      };
+  
       setTimeout(async () => {
-        const response = await fetch('http://localhost:5009/api/Usuario', {
+        const response = await fetch('http://localhost:5009/api/usuario/alterar', {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(editingUser),
-        });
+          body: JSON.stringify(updatedUserData),
+        });        
+  
         if (response.ok) {
           closeModalEdit();
           window.location.reload();
@@ -279,6 +287,7 @@ function App() {
       console.error('Erro ao atualizar o usuário:', error);
     }
   };
+  
   
   //#endregion
   
@@ -570,105 +579,7 @@ function App() {
                 onChange={(e) => handleFieldChange('telefone', e.target.value)}
               />
             </div>
-            <div className="input">
-              <img src={endereco_icon} alt="" />
-              {/* <InputMask
-                type="text"
-                name="cep"
-                id="cep"
-                mask="99999-999"
-                placeholder="CEP"
-              /> */}
-              <InputMask
-                type="text"
-                name="enderecoInfo.cep"
-                id="cep"
-                mask="99999-999"
-                placeholder="CEP"
-                value={editingUser?.enderecoInfo.cep || ''}
-                onChange={(e) => handleFieldChange('enderecoInfo.cep', e.target.value)}
-              />
-            </div>
-            <button
-            id="buscar"
-            onClick={handleSearchCEPEdit}
-            >
-            Buscar
-            </button>
 
-            
-            <div className="input">
-              <img src={endereco_icon} alt="" />
-              {/* <input type="text" name="logradouro" id="logradouro" placeholder="Logradouro" /> */}
-              <input
-                type="text"
-                name="enderecoInfo.logradouro"
-                id="logradouro"
-                placeholder="Logradouro"
-                value={editingUser?.enderecoInfo.logradouro || ''}
-                onChange={(e) => handleFieldChange('enderecoInfo.logradouro', e.target.value)}
-              />
-            </div>
-            <div className="input">
-              <img src={endereco_icon} alt="" />
-              {/* <input type="text" name="bairro" id="bairro" placeholder="Bairro" /> */}
-              <input
-                type="text"
-                name="enderecoInfo.bairro"
-                id="bairro"
-                placeholder="Bairro"
-                value={editingUser?.enderecoInfo.bairro || ''}
-                onChange={(e) => handleFieldChange('enderecoInfo.bairro', e.target.value)}
-              />
-            </div>
-            <div className="input">
-              <img src={endereco_icon} alt="" />
-              {/* <input type="text" name="complemento" id="complemento" placeholder="Complemento" /> */}
-              <input
-                type="text"
-                name="enderecoInfo.complemento"
-                id="complemento"
-                placeholder="Complemento"
-                value={editingUser?.enderecoInfo.complemento || ''}
-                onChange={(e) => handleFieldChange('enderecoInfo.complemento', e.target.value)}
-              />
-            </div>
-            <div className="input">
-              <img src={endereco_icon} alt="" />
-              {/* <input type="text" name="localidade" id="localidade" placeholder="Localidade" /> */}
-              <input
-                type="text"
-                name="enderecoInfo.cidade"
-                id="cidade"
-                placeholder="Localidade"
-                value={editingUser?.enderecoInfo.cidade || ''}
-                onChange={(e) => handleFieldChange('enderecoInfo.cidade', e.target.value)}
-              />
-            </div>
-            <div className="input">
-              <img src={endereco_icon} alt="" />
-              {/* <input type="text" name="uf" id="uf" placeholder="UF" /> */}
-              <input
-                type="text"
-                name="enderecoInfo.uf"
-                id="uf"
-                placeholder="UF"
-                value={editingUser?.enderecoInfo.uf || ''}
-                onChange={(e) => handleFieldChange('enderecoInfo.uf', e.target.value)}
-              />
-            </div>
-            <div className="input">
-              <img src={endereco_icon} alt="" />
-              {/* <input type="text" name="numero" id="numero" placeholder="Número" /> */}
-              <input
-                type="text"
-                name="enderecoInfo.numero"
-                id="numero"
-                placeholder="Número"
-                value={editingUser?.enderecoInfo.numero || ''}
-                onChange={(e) => handleFieldChange('enderecoInfo.numero', e.target.value)}
-              />
-            </div>
 
           </div>
         </form>

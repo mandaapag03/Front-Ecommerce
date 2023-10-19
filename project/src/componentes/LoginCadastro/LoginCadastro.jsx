@@ -42,7 +42,7 @@ export const LoginCadastro = () => {
 
   const handleCadastro = () => {
     setIsLoading(true);
-
+  
     const nome = document.getElementById('nome').value;
     const email = document.getElementById('email').value;
     const senha = document.getElementById('senha').value;
@@ -55,16 +55,18 @@ export const LoginCadastro = () => {
     const localidade = document.getElementById('localidade').value;
     const uf = document.getElementById('uf').value;
     const numero = document.getElementById('numero').value;
-
+  
     const novoUsuario = {
-      cpf,
-      nomeCompleto: nome,
-      email,
-      senha,
-      telefone,
-      isActive: true,
-      tipoUsuario: 2,
-      enderecoInfo: {
+      usuario: {
+        cpf,
+        nomeCompleto: nome,
+        email,
+        senha,
+        telefone,
+        isActive: true,
+        tipoUsuarioId: 2,
+      },
+      endereco: {
         cep,
         logradouro,
         numero,
@@ -74,21 +76,22 @@ export const LoginCadastro = () => {
         complemento,
       },
     };
-    setTimeout(() => {    
-      axios.post('http://localhost:5009/api/Usuario/cadastro', novoUsuario)
-        .then(response => {
+  
+    setTimeout(() => {
+      axios
+        .post('http://localhost:5009/api/Usuario/cadastro', novoUsuario)
+        .then((response) => {
           console.log('Cadastro realizado com sucesso!', response.data);
           navigate('/PainelDeControle');
         })
-        .catch(error => {
+        .catch((error) => {
           console.error('Erro ao cadastrar o usuário:', error);
         })
         .finally(() => {
-            setIsLoading(false); 
+          setIsLoading(false);
         });
     }, 1000);
   };
-
   //#endregion
 
   return (
