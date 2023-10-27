@@ -220,3 +220,36 @@
     max-height: 30px;
   }
   
+  .cartItem button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    margin: 0;
+    font-size: 1.5rem;
+    transition: color 0.2s;
+  }
+  
+  .cartItem button:hover {
+    color: #703f1d;
+  }
+  
+  .cartItem button.plus {
+    color: #703f1d;
+  }
+  
+  .cartItem button.minus {
+    color: #888;
+  }
+
+  .priceLabel {
+    font: 700 12px "Open Sans", Arial, Helvetica, sans-serif;
+    margin: 4px 0;
+  }
+
+  .priceValue {
+    font: 800 20px/16px "Open Sans", Arial, Helvetica, sans-serif;
+    letter-spacing: -1px;
+    color: #703f1d;
+    vertical-align: -2px;
+  }
