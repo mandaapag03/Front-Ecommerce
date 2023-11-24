@@ -9,6 +9,7 @@ import telefone_icon from '../Imgs/telefone_icon.png';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+
 export const LoginCadastro = () => {
   const [action, setAction] = useState("Login");
   const [isLoading, setIsLoading] = useState(false);
