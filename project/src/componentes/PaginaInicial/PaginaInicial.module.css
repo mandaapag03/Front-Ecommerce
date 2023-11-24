@@ -253,3 +253,167 @@
     color: #703f1d;
     vertical-align: -2px;
   }
+
+  .loggedUserInfo p {
+    background-color: transparent;
+    border: none;
+    color: #AB8262;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 10px 30px;
+    transition: color 0.3s ease;
+  }
+
+  .loggedUserInfo p:hover {
+    color: #703f1d;
+  }
+
+  .loggedUserInfo button {
+    background-color: transparent;
+    border: none;
+    color: #AB8262;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    padding: 10px 2px;
+    transition: color 0.3s ease;
+  }
+
+  .loggedUserInfo button:hover {
+    color: #703f1d;
+  }
+  
+  .loggedUserInfo button .logoffIcon {
+    margin-right: 8px;
+  }
+
+  .loggedUserInfo {
+    position: relative;
+  }
+
+  .dropdownContent {
+    position: absolute;
+    top: 100%;
+    right: 50px;
+    background-color: #f9f9f9ad;
+    min-width: 160px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    border-radius: 8px; 
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s, transform 0.3s;
+  }
+
+  .loggedUserInfo:hover .dropdownContent {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .favoritosItem {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    margin-bottom: 10px;
+  }
+
+  .favoritosItem img {
+    max-width: 100%;
+    max-height: 200px;
+    height: auto;
+  }
+
+  .favoritosItem h2 {
+    font-size: 1.5rem;
+    margin: 10px 0;
+  }
+
+  .favoritosItem p {
+    font-size: 1rem;
+    margin: 10px 0;
+  }
+
+  .favoritosItemList {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .favoriteButton {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .favoriteIcon {
+    color: #695c5c;
+  }
+  
+  .favoriteActive .favoriteIcon {
+    color: #AB8262;
+  }
+
+  .favoriteContent {
+    display: flex;
+    align-items: center;
+  }
+  
+  .favoriteLabel {
+    margin-left: 8px;
+    color: #695c5c;
+  }
+  
+  .favoriteActive .favoriteLabel {
+    color: #AB8262;
+  }
+
+  .favoriteActionButton {
+    background-color: #AB8262;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: block;
+    margin-top: 10px;
+  }
+  
+  .removeFavoriteButton {
+    background-color: white;
+    color: #ff5a5f;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    display: block;
+    margin-bottom: 10px;
+    margin: 10px -15px;
+  }
+  
+  .removeFavoriteButton:hover {
+    color: red;
+  }
+  
+  .viewProductButton {
+    background-color: white;
+    color: #AB8262;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    display: block;
+    margin: 10px -15px;
+  }
+  
+  .viewProductButton:hover {
+    color: #703f1d;
+  }

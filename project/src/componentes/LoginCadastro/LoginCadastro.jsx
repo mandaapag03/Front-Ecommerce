@@ -1,57 +1,91 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './LoginCadastro.css';
 import user_icon from '../Imgs/user.png';
 import email_icon from '../Imgs/email.png';
 import senha_icon from '../Imgs/senha.png';
 import cpf_icon from '../Imgs/cpf_icon.png';
 import InputMask from 'react-input-mask';
-import telefone_icon from '../Imgs/telefone_icon.png'
+import telefone_icon from '../Imgs/telefone_icon.png';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios'
+import axios from 'axios';
 
 export const LoginCadastro = () => {
   const [action, setAction] = useState("Login");
+  const [isLoading, setIsLoading] = useState(false);
+  const [token, setToken] = useState(null);
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  const [nome, setNome] = useState('');
+  const [cpf, setCpf] = useState('');
+  const [telefone, setTelefone] = useState('');
 
   const navigate = useNavigate();
 
-  const handlePainelDeControleClick = () => {
-    navigate('/PainelDeControle');
-  };
+  useEffect(() => {
+    const storedToken = localStorage.getItem('token');
+    if (storedToken) {
+      setToken(storedToken);
+    }
+  }, []);
 
-  const [isLoading, setIsLoading] = useState(false);
-
-  //#region Cadastro de Usuário
-
-  const handleCadastro = () => {
+  const handleAuthentication = async (userData) => {
     setIsLoading(true);
   
-    const novoUsuario = {
-      cpf: document.getElementById('cpf').value,
-      nomeCompleto: document.getElementById('nome').value,
-      email: document.getElementById('email').value,
-      senha: document.getElementById('senha').value,
-      telefone: document.getElementById('telefone').value,
-      isActive: true,
-      tipoUsuarioId: 2,
-    };
-
-  
-    setTimeout(() => {
-      axios
-        .post('http://localhost:5009/api/Usuario/cadastro', novoUsuario)
-        .then((response) => {
-          console.log('Cadastro realizado com sucesso!', response.data);
-          navigate('/PainelDeControle');
-        })
-        .catch((error) => {
-          console.error('Erro ao cadastrar o usuário:', error);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
-    }, 1000);
+    try {
+      const response = await axios.post(
+        action === "Login"
+          ? 'http://localhost:5009/api/Usuario/login'
+          : 'http://localhost:5009/api/Usuario/cadastro',
+        userData
+      );
+      console.log(action === "Login" ? 'Login bem-sucedido!' : 'Cadastro realizado com sucesso!', response.data);
+      setToken(response.data.token);
+      const userFullName = response.data.usuario.nomeCompleto || userData.nomeCompleto;
+      const userDataToSave = { nomeCompleto: userFullName };
+      saveUserDataAndToken(userDataToSave, response.data.token);
+      navigate('/', { state: { nomeUsuario: userFullName } });
+    } catch (error) {
+      console.error(`Erro ao ${action === "Login" ? 'fazer login' : 'cadastrar o usuário'}:`, error);
+    } finally {
+      setIsLoading(false);
+    }
   };
-  //#endregion
+  
+  const saveUserDataAndToken = (userData, token) => {
+    localStorage.setItem('userData', JSON.stringify(userData));
+    localStorage.setItem('token', token);
+  };
+  
+  const handleSubmitCadastro = async () => {
+    setIsLoading(true);
+    try {
+      const novoUsuario = {
+        cpf,
+        nomeCompleto: nome,
+        email,
+        senha,
+        telefone,
+        isActive: true,
+        tipoUsuarioId: 2,
+      };
+      const response = await axios.post('http://localhost:5009/api/Usuario/cadastro', novoUsuario);
+      console.log('Cadastro realizado com sucesso!', response.data);
+      setToken(response.data.token);
+      const userFullName = response.data?.usuario?.nomeCompleto || novoUsuario.nomeCompleto;
+      const userDataToSave = { nomeCompleto: userFullName };
+      saveUserDataAndToken(userDataToSave, response.data.token);
+      navigate('/', { state: { nomeUsuario: userFullName } });
+    } catch (error) {
+      console.error('Erro ao cadastrar o usuário:', error);
+    } finally {
+      setIsLoading(false);
+    }
+
+  };  
+      const handleSubmit = async () => {
+      const usuario = { email, senha };
+      await handleAuthentication(usuario);
+  };
 
   return (
     <div className='container'>
@@ -70,36 +104,68 @@ export const LoginCadastro = () => {
           <>
             <div className="input">
               <img src={email_icon} alt="" />
-              <input type="email" name="email" id="email" placeholder="Email" />
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </div>
             
             <div className="input">
               <img src={senha_icon} alt="" />
-              <input type="password" name="senha" id="senha" placeholder="Senha" />
+              <input
+                type="password"
+                name="senha"
+                placeholder="Senha"
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}
+              />
             </div>
           </>
         ) : (
           <>
-              <div className="input">
+            <div className="input">
               <img src={user_icon} alt="" />
-              <input type="text" name="nome" id="nome" placeholder="Nome completo" maxLength="60" />
+              <input
+                type="text"
+                name="nome"
+                placeholder="Nome completo"
+                maxLength="60"
+                value={nome}
+                onChange={(e) => setNome(e.target.value)}
+              />
             </div>
             <div className="input">
               <img src={email_icon} alt="" />
-              <input type="email" name="email" id="email" placeholder="Email" />
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </div>
             <div className="input">
               <img src={senha_icon} alt="" />
-              <input type="password" name="senha" id="senha" placeholder="Senha" />
+              <input
+                type="password"
+                name="senha"
+                placeholder="Senha"
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}
+              />
             </div>
             <div className="input">
               <img src={cpf_icon} alt="" />
               <InputMask
                 type="text"
                 name="cpf"
-                id="cpf"
                 mask="999.999.999-99"
                 placeholder="CPF"
+                value={cpf}
+                onChange={(e) => setCpf(e.target.value)}
               />
             </div>
             <div className="input">
@@ -107,18 +173,19 @@ export const LoginCadastro = () => {
               <InputMask
                 type="text"
                 name="telefone"
-                id="telefone"
                 mask="(99) 99999-9999"
                 placeholder="(99) 99999-9999"
+                value={telefone}
+                onChange={(e) => setTelefone(e.target.value)}
               />
             </div>
-            {action === "Cadastre-se" && (
-              <>
-              </>
-            )}
           </>
         )}
       </div>
+      {action !== "Login" && (
+        <>
+        </>
+      )}
       {action !== "Cadastre-se" && (
         <div className="forgot-password">Esqueceu a senha? <span>Clique aqui para Recuperar!</span></div>
       )}
@@ -129,16 +196,12 @@ export const LoginCadastro = () => {
         <div className="sign-up">Já tem cadastro? <span onClick={() => { setAction("Login") }}>Faça o Login!</span></div>
       )}
       <div className="submit-container">
-        {action === "Login" ? null : (
-          <div className="submit" onClick={handleCadastro}>Cadastrar</div>
-        )}
-        {action === "Cadastre-se" ? null : (
-          <div className="submit" onClick={handlePainelDeControleClick}>Login</div>
-        )}
+        <div className="submit" onClick={action === "Login" ? handleSubmit : handleSubmitCadastro}>
+          {action === "Login" ? "Login" : "Cadastrar"}
+        </div>
       </div>
     </div>
   );
 };
-
 
 export default LoginCadastro;
