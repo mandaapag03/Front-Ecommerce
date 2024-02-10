@@ -1,3 +1,15 @@
+# Docker
+1 - Build image:
+### `docker image build -t oh-my-dog-web .`
+
+2 - Create network
+### `docker network create --driver bridge postgres-network`
+
+3 - Run container 
+### `docker container run --name omd-web --network=postgres-network -p 3000:3000 -d oh-my-dog-web`
+
+### Access URL: http://localhost:3000/
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
