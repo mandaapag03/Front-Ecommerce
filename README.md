@@ -19,7 +19,7 @@
 3 - Run container 
 ### `docker container run --name omd-web --network=postgres-network -p 3000:3000 -d oh-my-dog-web`
 
-### Access URL: http://localhost:3000/
+# Access URL: http://localhost:3000/
 
 # Getting Started with Create React App
 
