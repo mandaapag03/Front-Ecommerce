@@ -1,4 +1,15 @@
 # Docker
+
+## Docker Compose
+
+1 - Build image:
+### `docker image build -t oh-my-dog-web .`
+
+2 - Up docker compose
+### `docker-compose up` 
+
+## Run Local Container
+
 1 - Build image:
 ### `docker image build -t oh-my-dog-web .`
 

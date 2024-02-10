@@ -1,0 +1,15 @@
+services:
+  web:
+    build: .
+    image: oh-my-dog-web
+    container_name: ohmydog-web
+    volumes:
+      - C:\Users\pagan\OneDrive\Documentos\Faculdade\ADS\Software_Project\OhMyDog-Web:/var/lib/omdweb
+    ports:
+      - "3000:3000"
+    networks:
+      - omd-network
+
+networks:
+  omd-network:
+    driver: bridge
