@@ -1,4 +1,4 @@
-import React, { useState, useEffect  } from 'react';
+import React, { useState, useEffect } from 'react';
 import './PainelDeControle.css';
 import DataTable from 'react-data-table-component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -16,8 +16,8 @@ import axios from 'axios'
 
 function App() {
   const [isLoading, setIsLoading] = useState(false);
-  
-  
+
+
   const handleSave = async () => {
     setIsLoading(true);
     try {
@@ -30,9 +30,9 @@ function App() {
         isActive: true,
         tipoUsuarioId: 2,
       };
-  
+
       setTimeout(async () => {
-        const response = await axios.post('http://localhost:5009/api/Usuario/cadastro', requestBody);
+        const response = await axios.post('http://localhost:5010/api/User/register', requestBody);
         console.log('Resposta da API:', response.data);
         closeModal();
         window.location.reload();
@@ -87,7 +87,7 @@ function App() {
   ];
 
   useEffect(() => {
-    axios.get('http://localhost:5009/api/Usuario')
+    axios.get('http://localhost:5010/api/Usuario')
       .then((response) => {
         console.log(response.data)
         console.log('response.data')
@@ -111,16 +111,16 @@ function App() {
     },
     headCells: {
       style: {
-        fontSize: '18px', 
+        fontSize: '18px',
       },
     },
     table: {
       style: {
-        width: '100%', 
+        width: '100%',
       },
     },
   };
-  
+
   const [records, setRecords] = useState(users);
 
   function handleFilter(event) {
@@ -154,12 +154,12 @@ function App() {
   };
 
   //#region EDIÇÃO DE USUÁRIOS
-  
+
   const [editingUser, setEditingUser] = useState(null);
-  
+
   const handleEdit = async (row) => {
     try {
-      const response = await fetch(`http://localhost:5009/api/Usuario/buscar/${row.cpf}`);
+      const response = await fetch(`http://localhost:5010/api/User/find/${row.cpf}`);
       if (response.ok) {
         const userData = await response.json();
         setEditingUser(userData);
@@ -171,12 +171,12 @@ function App() {
       console.error('Erro ao buscar os dados do usuário:', error);
     }
   };
-  
+
   const handleFieldChange = (fieldName, value) => {
     const updatedUser = { ...editingUser };
-  
+
     const fieldParts = fieldName.split('.');
-  
+
     let currentField = updatedUser;
     for (let i = 0; i < fieldParts.length; i++) {
       const part = fieldParts[i];
@@ -189,23 +189,23 @@ function App() {
         currentField = currentField[part];
       }
     }
-  
+
     setEditingUser(updatedUser);
   };
-  
-  
+
+
   const handleSaveEdit = async () => {
     setIsLoading(true);
     try {
       setTimeout(async () => {
-        const response = await fetch('http://localhost:5009/api/usuario/alterar', {
+        const response = await fetch('http://localhost:5010/api/User/update', {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(editingUser),
         });
-  
+
         if (response.ok) {
           closeModalEdit();
           window.location.reload();
@@ -218,11 +218,11 @@ function App() {
       console.error('Erro ao atualizar o usuário:', error);
     }
   };
-  
+
   //#endregion
-  
+
   //#region INATIVAR USUÁRIO
-  
+
   const [confirmationModalIsOpen, setConfirmationModalIsOpen] = useState(false);
   const [userIdToInactivate, setUserIdToInactivate] = useState(null);
 
@@ -230,10 +230,10 @@ function App() {
     setIsLoading(true);
     try {
       setTimeout(async () => {
-        const response = await fetch(`http://localhost:5009/api/Usuario/inativar/${userIdToInactivate}`, {
+        const response = await fetch(`http://localhost:5010/api/User/inactivate/${userIdToInactivate}`, {
           method: 'PUT',
         });
-        
+
         if (response.ok) {
           setConfirmationModalIsOpen(false);
           window.location.reload();
@@ -254,7 +254,7 @@ function App() {
 
   //#endregion
 
-  const [modalIsOpen, setModalIsOpen] = useState(false); 
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const openModal = () => {
     setModalIsOpen(true);
@@ -264,7 +264,7 @@ function App() {
     setModalIsOpen(false);
   };
 
-  const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false); 
+  const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
 
   const openModalEdit = () => {
     setModalIsOpenEdit(true);
@@ -310,11 +310,11 @@ function App() {
         </div>
       </div><br />
       <div className="custom-table-container">
-        <DataTable 
+        <DataTable
           columns={columns}
           data={users}
           customStyles={customStyles}
-          // pagination
+        // pagination
         />
       </div>
 
@@ -361,7 +361,7 @@ function App() {
             </div>
           </div>
         </form>
-        
+
         <div className="modal-buttons">
           <button
             id="botao-cancelar"
@@ -450,7 +450,7 @@ function App() {
 
           </div>
         </form>
-        
+
         <div className="modal-buttons">
           <button
             id="botao-cancelar"
@@ -469,10 +469,10 @@ function App() {
 
 
       <Modal
-      isOpen={confirmationModalIsOpen}
-      onRequestClose={() => setConfirmationModalIsOpen(false)}
-      contentLabel="Modal de Confirmação de Inativação"
-      style={customModalStylesInativar}
+        isOpen={confirmationModalIsOpen}
+        onRequestClose={() => setConfirmationModalIsOpen(false)}
+        contentLabel="Modal de Confirmação de Inativação"
+        style={customModalStylesInativar}
       >
         <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>
           Deseja inativar este usuário?
@@ -481,19 +481,19 @@ function App() {
           <button
             id="botao-nao"
             onClick={() => setConfirmationModalIsOpen(false)}
-            >
+          >
             Não
           </button>
           <button
             id="botao-sim"
             onClick={handleConfirmInactivate}
-            >
+          >
             Sim
           </button>
         </div>
       </Modal>
 
-      
+
     </div>
   )
 }
