@@ -5,6 +5,7 @@ import PainelDeControle from './componentes/AdminPanel/PainelDeControle';
 import Header from './componentes/Header';
 import PainelDeControleProdutos from './componentes/ProductsControl/PainelDeControleProdutos'
 import PaginaInicial from './componentes/PaginaInicial/PaginaInicial';
+import Purchasing from './componentes/Purchasing/Purchasing';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Routes>
           <Route path="/" element={<PaginaInicial />} />
           <Route path="/Login" element={<LoginCadastro />} />
+          <Route path="/Purchasing" element={<Purchasing />} />
           <Route path="/PainelDeControle" element={
             <>
               <Header />

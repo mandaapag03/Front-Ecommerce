@@ -1,0 +1,224 @@
+.progressBar {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   margin-bottom: 20px;
+  }
+  
+.progressIconContainer {
+   display: flex;
+   justify-content: space-between;
+   width: 80%;
+   margin: 0 auto;
+  }
+  
+.progressCheckpoint {
+   position: relative;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   flex-direction: column;
+   width: 60px;
+   text-align: center;
+   cursor: pointer;
+   font-size: 14px;
+   color: #ccc;
+  }
+  
+.progressCheckpoint.active {
+   color: #8b4513;
+  }
+  
+.progressLineContainer {
+   display: flex;
+   align-items: center;
+   position: relative;
+   width: 100%;
+  }
+  
+.progressLine {
+   height: 4px;
+   background-color: #8b4513;
+   transition: width 0.5s ease;
+  }
+
+.addressListContainer {
+   margin-top: 20px;
+  }
+
+.addressListContainer p {
+   font-style: italic;
+   color: #999;
+  }
+
+.addressListContainer > div {
+   background-color: #f5f5f5;
+   padding: 10px;
+   border-radius: 5px;
+   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+.addressListContainer ul {
+   list-style: none;
+   padding: 0;
+   margin: 0;
+  }
+  
+.addressListContainer li {
+   margin-bottom: 8px;
+  }
+
+.addressListContainer li {
+   position: relative;
+   list-style: none;
+   padding-left: 20px;
+  }
+  
+.addressListContainer li::before {
+   content: '●';
+   position: absolute;
+   left: 0;
+   color: #ccc;
+   cursor: pointer;
+  }
+  
+.addressListContainer li.selected::before {
+   color: #00ba47;
+  }
+
+.cadastrarEnderecoButton,
+.voltarParaInicioButton,
+.fecharPaginaButton,
+.avancarFreteButton, 
+.avancarPagamentoButton {
+   background-color: white;
+   color: black;
+   padding: 8px 15px;
+   cursor: pointer;
+   transition: background-color 0.3s, border-color 0.3s;
+   border-radius: 5px;
+  }
+
+.cadastrarEnderecoButton:hover {
+   background-color: #AB8262;
+   border-color: #AB8262;
+   color: white;
+  }
+
+.voltarParaInicioButton:hover {
+   background-color: #f3212c;
+   border-color: #f3212c;
+   color: white;
+  }
+
+.addressButtons {
+    margin-top: 20px;
+  }
+ 
+.addressButtons button {
+    margin-right: 10px;
+  }
+
+.addressItem {
+    cursor: pointer; 
+  }
+  
+.addressItem.selectedAddress {
+    background-color: #e0e0e0;
+    cursor: default;
+  }
+  
+.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+.avancarFreteButton:hover {
+    background-color: #00ba47;
+    border-color: #00ba47;
+    color: white;
+  }
+
+.buttonsContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+  
+.buttonsContainer button {
+    margin-top: 50px;
+  }
+  
+.avancarPagamentoButton:hover {
+    background-color: #008e37;
+    border-color: #008e37;
+    color: white;
+  }
+  
+.shippingMethodsContainer {
+    background-color: #f5f5f5;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+.shippingMethodsContainer ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+.shippingMethodsContainer li {
+    position: relative;
+    list-style: none;
+    padding-left: 20px;
+    margin-bottom: 8px;
+  }
+  
+.shippingMethodsContainer li::before {
+    content: '●';
+    position: absolute;
+    left: 0;
+    color: #ccc;
+    cursor: pointer;
+  }
+  
+.shippingMethodsContainer li.selected::before {
+    color: #00ba47;
+  }
+  
+.paymentMethodListContainer ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+.paymentMethodListContainer li {
+    margin-bottom: 8px; 
+    position: relative;
+    list-style: none;
+    padding-left: 20px;
+  }
+  
+.paymentMethodListContainer li::before {
+    content: '●';
+    position: absolute;
+    left: 0;
+    color: #ccc;
+    cursor: pointer;
+  }
+  
+.paymentMethodListContainer li.selected::before {
+    color:#00ba47;
+  }
+
+.paymentMethodListContainer {
+    background-color: #f5f5f5;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  
+
+

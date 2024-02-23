@@ -39,6 +39,14 @@ const ProductList = () => {
     setModalIsOpen(false);
   };
 
+  const navigateToPurchasing = () => {
+    if (token) {
+      navigate('/purchasing');
+    } else {
+      navigate('/login');
+    }
+  };
+
   const handleAddToFavoritos = async (produto) => {
   const updatedFavoritos = isFavorito(produto)
   ? favoritos.filter((fav) => fav.id !== produto.id)
@@ -354,7 +362,7 @@ if (token) {
     ))}
     </ul>
     </div>
-    <button className={styles.finishButton}>Finalizar Compra</button>
+    <button className={styles.finishButton} onClick={navigateToPurchasing}> Finalizar Compra </button>
     </Modal>
     <Modal isOpen={favoritosModalIsOpen} onRequestClose={closeFavoritosModal} contentLabel="Modal Favoritos" style={customModalStyles}>
     <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Lista De Desejos</h2>
