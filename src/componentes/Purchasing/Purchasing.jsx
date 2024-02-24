@@ -6,7 +6,7 @@ import InputMask from 'react-input-mask';
 import endereco_icon from '../Imgs/endereco_icon.png';
 import axios from 'axios';
 
-  const Purchasing = ({ handleClose, token }) => {
+const Purchasing = ({ handleClose, token }) => {
   const navigate = useNavigate();
   const [isAddressModalOpen, setAddressModalOpen] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -19,25 +19,25 @@ import axios from 'axios';
 
   const fetchPaymentMethods = async () => {
     try {
-      const response = await axios.get('http://localhost:5009/api/FormaPagamento');
+      const response = await axios.get('http://localhost:5228/api/PaymentMethod');
       setPaymentMethods(response.data);
     } catch (error) {
       console.error('Erro formas de pagamento, emynem esta triste:', error);
     }
   };
   useEffect(() => {
-  if (progress === 4) {
-  fetchPaymentMethods();
-}
+    if (progress === 4) {
+      fetchPaymentMethods();
+    }
   }, [progress]);
 
   const handleSelectPaymentMethod = (methodId) => {
-  setSelectedPaymentMethod(methodId);
+    setSelectedPaymentMethod(methodId);
   };
 
   const fetchShippingMethods = async () => {
     try {
-      const response = await axios.get('http://localhost:5009/api/FormaEnvio');
+      const response = await axios.get('http://localhost:5053/api/Shipping');
       setShippingMethods(response.data);
     } catch (error) {
       console.error('Erro de envio:', error);
@@ -58,7 +58,7 @@ import axios from 'axios';
       const token = localStorage.getItem('token');
       if (token) {
         const userId = getTokenPayload(token).nameid;
-        const response = await axios.get(`http://localhost:5009/api/Endereco/listar/${userId}`);
+        const response = await axios.get(`http://localhost:5010/api/Address/list/${userId}`);
         setAddresses(response.data);
       } else {
         console.error('Token não encontrado. user sem chance chefe.');
@@ -79,7 +79,7 @@ import axios from 'axios';
       alert('Não é possível fazer a identificação novamente, você já está logado.');
       return;
     }
-  
+
     if (checkpointNumber > progress) {
       if (checkpointNumber === 3 && !selectedAddress) {
         alert('Selecione um endereço antes de avançar para o próximo passo.');
@@ -94,37 +94,37 @@ import axios from 'axios';
         return;
       }
     }
-  
+
     setProgress(checkpointNumber);
     const progressLine = document.getElementById('progressLine');
     if (progressLine) {
       progressLine.style.backgroundPosition = `${(checkpointNumber - 1) * 25}% 0%`;
     }
   };
-  
+
   useEffect(() => {
     setProgress(2);
   }, []);
   const handleSelectAddress = (address) => {
-        setSelectedAddress(address.id);
-};
+    setSelectedAddress(address.id);
+  };
   const handleModalSaveAddress = async () => {
-  const token = localStorage.getItem('token');
-  const formData = {
-  cep: document.getElementById('cep').value,
-  logradouro: document.getElementById('logradouro').value,
-  numero: parseInt(document.getElementById('numero').value),
-  bairro: document.getElementById('bairro').value,
-  cidade: document.getElementById('localidade').value,
-  uf: document.getElementById('uf').value,
-  complemento: document.getElementById('complemento').value,
-};
-  
+    const token = localStorage.getItem('token');
+    const formData = {
+      cep: document.getElementById('cep').value,
+      logradouro: document.getElementById('logradouro').value,
+      numero: parseInt(document.getElementById('numero').value),
+      bairro: document.getElementById('bairro').value,
+      cidade: document.getElementById('localidade').value,
+      uf: document.getElementById('uf').value,
+      complemento: document.getElementById('complemento').value,
+    };
+
     try {
       if (token) {
         formData.idUsuario = getTokenPayload(token).nameid;
         console.log('ID do user:', formData.idUsuario);
-        const response = await axios.post(`http://localhost:5009/api/Endereco/cadastrar/${formData.idUsuario}`, formData);
+        const response = await axios.post(`http://localhost:5010/api/Address/register/${formData.idUsuario}`, formData);
         console.log('deu bom !', response.data);
         handleAddressModalClose();
         window.location.reload();
@@ -132,14 +132,14 @@ import axios from 'axios';
         console.error('Token não encontrado. user sem chance chefe.');
       }
     } catch (error) {
-        console.error('Erro ao enviar para a api:', error);
+      console.error('Erro ao enviar para a api:', error);
     }
   };
 
   const getTokenPayload = (token) => {
-  const base64Url = token.split('.')[1];
-  const base64 = base64Url.replace('-', '+').replace('_', '/');
-  return JSON.parse(atob(base64));
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace('-', '+').replace('_', '/');
+    return JSON.parse(atob(base64));
   };
 
   const handleCadastrarEndereco = () => {
@@ -157,33 +157,33 @@ import axios from 'axios';
   const handleSearchCEP = (e) => {
     e.preventDefault();
 
-  const cep = document.getElementById('cep').value;
-  axios
-  .get(`https://viacep.com.br/ws/${cep}/json/`)
-  .then((response) => {
-  const cepData = response.data;
-  console.log('Dados do CEP:', cepData);
+    const cep = document.getElementById('cep').value;
+    axios
+      .get(`https://viacep.com.br/ws/${cep}/json/`)
+      .then((response) => {
+        const cepData = response.data;
+        console.log('Dados do CEP:', cepData);
 
-  document.getElementById('logradouro').value = cepData.logradouro;
-  document.getElementById('bairro').value = cepData.bairro;
-  document.getElementById('localidade').value = cepData.localidade;
-  document.getElementById('uf').value = cepData.uf;
-  })
-  .catch((error) => {
-  console.error('Erro ao buscar o CEP:', error);
-  });
+        document.getElementById('logradouro').value = cepData.logradouro;
+        document.getElementById('bairro').value = cepData.bairro;
+        document.getElementById('localidade').value = cepData.localidade;
+        document.getElementById('uf').value = cepData.uf;
+      })
+      .catch((error) => {
+        console.error('Erro ao buscar o CEP:', error);
+      });
   };
 
   return (
     <div className={styles.purchasingContainer}>
-    <style>{`
+      <style>{`
       body {
         background-color: white;
         background-image: none;
       }
     `}</style>
-    <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Entrega</h2>
-    <div className={styles.progressBar}>
+      <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Entrega</h2>
+      <div className={styles.progressBar}>
         <div className={styles.progressIconContainer}>
           <div className={`${styles.progressCheckpoint} ${progress >= 1 ? styles.active : ''}`} onClick={() => handleCheckpoint(1)}>
             <span role="img" aria-label="Identificação">👤</span> Identificação
@@ -203,12 +203,12 @@ import axios from 'axios';
         </div>
 
         <div className={styles.purchasingContainer}>
-      </div>
+        </div>
 
-  <div className={styles.progressLineContainer}>
-    <div className={styles.progressLine} style={{ width: `${(progress - 1) * 25}%` }} />
-  </div>
-</div>
+        <div className={styles.progressLineContainer}>
+          <div className={styles.progressLine} style={{ width: `${(progress - 1) * 25}%` }} />
+        </div>
+      </div>
       <div className={styles.addressListContainer}>
         {progress === 2 && addresses.length > 0 ? (
           <div>
@@ -231,76 +231,76 @@ import axios from 'axios';
       </div>
 
       {progress === 3 && shippingMethods.length > 0 && (
-         <div className={styles.shippingMethodsContainer}>
-             <h3>Escolha um frete disponível:</h3>
-         <ul>
-                {shippingMethods.map((method) => (
-        <li
-            key={method.descricao}
-            className={`${styles.shippingMethod} ${selectedShippingMethod === method.id ? styles.selected : ''}`}
-            onClick={() => handleSelectShippingMethod(method.id)}
-        >
-            <p>{method.descricao}</p>
-            <p>R$ {method.valorFrete.toFixed(2)}</p>
-        </li>
-        ))}
-         </ul>
-       </div>
-        )}
+        <div className={styles.shippingMethodsContainer}>
+          <h3>Escolha um frete disponível:</h3>
+          <ul>
+            {shippingMethods.map((method) => (
+              <li
+                key={method.descricao}
+                className={`${styles.shippingMethod} ${selectedShippingMethod === method.id ? styles.selected : ''}`}
+                onClick={() => handleSelectShippingMethod(method.id)}
+              >
+                <p>{method.descricao}</p>
+                <p>R$ {method.valorFrete.toFixed(2)}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
-{progress === 4 && paymentMethods.length > 0 ? (
-  <div className={styles.paymentMethodListContainer}>
-    <h3>Escolha a Forma de Pagamento:</h3>
-    <ul>
-      {paymentMethods.map((method) => (
-        <li
-          key={method.id}
-          className={`${styles.paymentMethodItem} ${selectedPaymentMethod === method.id ? styles.selected : ''}`}
-          onClick={() => handleSelectPaymentMethod(method.id)}
-        >
-          {method.descricao}
-        </li>
-      ))}
-    </ul>
-  </div>
-) : (
-  <p>{progress === 4 ? 'Nenhuma forma de pagamento disponível.' : ''}</p>
-)}
+      {progress === 4 && paymentMethods.length > 0 ? (
+        <div className={styles.paymentMethodListContainer}>
+          <h3>Escolha a Forma de Pagamento:</h3>
+          <ul>
+            {paymentMethods.map((method) => (
+              <li
+                key={method.id}
+                className={`${styles.paymentMethodItem} ${selectedPaymentMethod === method.id ? styles.selected : ''}`}
+                onClick={() => handleSelectPaymentMethod(method.id)}
+              >
+                {method.descricao}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <p>{progress === 4 ? 'Nenhuma forma de pagamento disponível.' : ''}</p>
+      )}
 
       <div className={styles.addressButtons}>
-  {progress === 2 && (
-    <button
-      className={styles.cadastrarEnderecoButton}
-      onClick={handleCadastrarEndereco}
-    >
-      Cadastrar Endereço
-    </button>
-  )}
-
-  <button className={styles.voltarParaInicioButton} onClick={handleVoltarParaInicio}>
-    Voltar para a Página Inicial
-  </button>
-
-  {progress === 2 && addresses.length > 0 && (
+        {progress === 2 && (
           <button
-          className={`${styles.avancarFreteButton} ${selectedAddress ? '' : styles.disabled}`}
-          onClick={() => handleCheckpoint(3)}
-          disabled={!selectedAddress}
-        >
-          Avançar para o Frete
-        </button>
+            className={styles.cadastrarEnderecoButton}
+            onClick={handleCadastrarEndereco}
+          >
+            Cadastrar Endereço
+          </button>
         )}
 
-{progress === 3 && (
-  <button
-    className={`${styles.avancarPagamentoButton} ${selectedShippingMethod ? '' : styles.disabled}`}
-    onClick={() => handleCheckpoint(4)}
-    disabled={!selectedShippingMethod}
-  >
-    Avançar para o Pagamento
-  </button>
-)}
-</div>
+        <button className={styles.voltarParaInicioButton} onClick={handleVoltarParaInicio}>
+          Voltar para a Página Inicial
+        </button>
+
+        {progress === 2 && addresses.length > 0 && (
+          <button
+            className={`${styles.avancarFreteButton} ${selectedAddress ? '' : styles.disabled}`}
+            onClick={() => handleCheckpoint(3)}
+            disabled={!selectedAddress}
+          >
+            Avançar para o Frete
+          </button>
+        )}
+
+        {progress === 3 && (
+          <button
+            className={`${styles.avancarPagamentoButton} ${selectedShippingMethod ? '' : styles.disabled}`}
+            onClick={() => handleCheckpoint(4)}
+            disabled={!selectedShippingMethod}
+          >
+            Avançar para o Pagamento
+          </button>
+        )}
+      </div>
       <Modal
         isOpen={isAddressModalOpen}
         onRequestClose={handleAddressModalClose}
@@ -345,6 +345,11 @@ import axios from 'axios';
 
             <div className="input">
               <img src={endereco_icon} alt="" />
+              <input type="text" name="numero" id="numero" placeholder="Número" />
+            </div>
+
+            <div className="input">
+              <img src={endereco_icon} alt="" />
               <input type="text" name="complemento" id="complemento" placeholder="Complemento" />
             </div>
 
@@ -358,18 +363,14 @@ import axios from 'axios';
               <input type="text" name="uf" id="uf" placeholder="UF" />
             </div>
 
-            <div className="input">
-              <img src={endereco_icon} alt="" />
-              <input type="text" name="numero" id="numero" placeholder="Número" />
-            </div>
           </div>
         </form>
         <div className="modal-buttons">
           <button id="botao-cancelar" onClick={handleAddressModalClose}> Cancelar </button>
           <button id="botao-salvar" onClick={handleModalSaveAddress}> Salvar </button>
-</div>
-</Modal>
-</div>
+        </div>
+      </Modal>
+    </div>
   );
 };
 
