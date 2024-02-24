@@ -1,15 +1,15 @@
-import React, { useState, useEffect  } from 'react';
+import React, { useState, useEffect } from 'react';
 import './PainelDeControleProdutos.css';
 import DataTable from 'react-data-table-component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faBan } from '@fortawesome/free-solid-svg-icons';
 import { faUser, faInfoCircle, faMoneyBill, faTags, faImage } from '@fortawesome/free-solid-svg-icons';
 import Modal from 'react-modal';
-import CurrencyInput from 'react-currency-masked-input';    
+import CurrencyInput from 'react-currency-masked-input';
 
 
 function App() {
-  
+
   //#region Dados Grid
 
   const [products, setProducts] = useState([]);
@@ -48,7 +48,7 @@ function App() {
           </button>
           <button
             className="btn btn-danger action-button-ban"
-            style={{ marginLeft: '5px' }} 
+            style={{ marginLeft: '5px' }}
             onClick={() => openConfirmationModal(row.id)}
           >
             <FontAwesomeIcon icon={faBan} />
@@ -61,7 +61,7 @@ function App() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const response = await fetch('http://localhost:5009/api/Produto');
+        const response = await fetch('http://localhost:5051/api/Product');
         if (response.ok) {
           const productsData = await response.json();
           console.log(productsData)
@@ -74,7 +74,7 @@ function App() {
         console.error('Erro ao buscar produtos da API:', error);
       }
     }
-  
+
     fetchProducts();
   }, []);
 
@@ -91,12 +91,12 @@ function App() {
     },
     headCells: {
       style: {
-        fontSize: '18px', 
+        fontSize: '18px',
       },
     },
     table: {
       style: {
-        width: '100%', 
+        width: '100%',
       },
     },
   };
@@ -104,7 +104,7 @@ function App() {
   //#endregion
 
   const [isLoading, setIsLoading] = useState(false);
-  
+
   // const [records, setRecords] = useState(data);
 
   // function handleFilter(event) {
@@ -115,7 +115,7 @@ function App() {
   // }
 
   //#region Modal Styles
-  
+
   const customModalStyles = {
     content: {
       width: '60%',
@@ -149,7 +149,7 @@ function App() {
   useEffect(() => {
     async function fetchCategorias() {
       try {
-        const response = await fetch('http://localhost:5009/api/Categoria');
+        const response = await fetch('http://localhost:5051/api/Category');
         if (response.ok) {
           const categoriasData = await response.json();
           setCategorias(categoriasData);
@@ -160,16 +160,16 @@ function App() {
         console.error('Erro ao buscar categorias da API:', error);
       }
     }
-  
+
     fetchCategorias();
   }, []);
-  
+
   //#endregion
-  
+
   //#region Cadastro de Produtos
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  
+
   const openModal = () => {
     setModalIsOpen(true);
   };
@@ -182,15 +182,15 @@ function App() {
     nome: '',
     descricao: '',
     foto: '',
-    precoUnitario: null, 
+    precoUnitario: null,
     isActive: true,
     categoriaId: null,
   });
-  
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    
+
     const newValue = name === 'precoUnitario' ? value.replace(/[,.]/g, '').replace(',', '.') : value;
     setFormData({
       ...formData,
@@ -211,7 +211,7 @@ function App() {
     try {
       setTimeout(async () => {
 
-        const response = await fetch('http://localhost:5009/api/Produto/cadastrar', {
+        const response = await fetch('http://localhost:5051/api/Product/register', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -227,12 +227,12 @@ function App() {
         setIsLoading(false);
 
       }, 1000);
-  
+
     } catch (error) {
       console.error('Erro ao cadastrar o produto:', error);
     }
   };
-  
+
   //#endregion
 
   //#region Edição de Produto
@@ -243,10 +243,10 @@ function App() {
     setEditingProduct(row);
     openModalEdit();
   }
-  
+
 
   const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
-  
+
   const openModalEdit = () => {
     setModalIsOpenEdit(true);
   };
@@ -267,14 +267,14 @@ function App() {
     setIsLoading(true);
     try {
       setTimeout(async () => {
-        const response = await fetch(`http://localhost:5009/api/Produto/alterar/${editingProduct.id}`, {
+        const response = await fetch(`http://localhost:5051/api/Product/change/${editingProduct.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(editingProduct),
         });
-    
+
         if (response.ok) {
           closeModalEdit();
           window.location.reload();
@@ -287,7 +287,7 @@ function App() {
       console.error('Erro ao editar o produto:', error);
     }
   };
-  
+
 
   //#endregion
 
@@ -304,15 +304,15 @@ function App() {
   const closeConfirmationModal = () => {
     setConfirmationModalIsOpen(false);
   };
-  
+
   const handleConfirmInactivate = async () => {
     setIsLoading(true);
     try {
       setTimeout(async () => {
-        const response = await fetch(`http://localhost:5009/api/Produto/inativar/${productIdToInactivate}`, {
+        const response = await fetch(`http://localhost:5051/api/Product/inactivate/${productIdToInactivate}`, {
           method: 'PUT',
         });
-    
+
         if (response.ok) {
           setConfirmationModalIsOpen(false);
           window.location.reload();
@@ -325,10 +325,10 @@ function App() {
       console.error('Erro ao inativar o produto:', error);
     }
   };
-  
+
 
   //#endregion
-  
+
   return (
     <div className='container mt-5'>
       {isLoading && (
@@ -339,36 +339,36 @@ function App() {
       <h1 className='table-title'><strong>Controle de Produtos</strong></h1>
       <div className='text-start'>
         <div style={{ display: 'flex', alignItems: 'center' }}>
-            <button
+          <button
             className="btn btn-success"
             id='botao-adicionar'
             onClick={openModal}
             style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '10%',
-                marginLeft: '5px',
-                backgroundColor: 'rgb(12, 214, 12)',
-                color: 'white',
-                borderRadius: '5px',
-                cursor: 'pointer',
-                transition: 'background-color 0.3s',
-                border: '10px'
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '10%',
+              marginLeft: '5px',
+              backgroundColor: 'rgb(12, 214, 12)',
+              color: 'white',
+              borderRadius: '5px',
+              cursor: 'pointer',
+              transition: 'background-color 0.3s',
+              border: '10px'
             }}
             onMouseEnter={(e) => (e.target.style.backgroundColor = 'rgb(25, 122, 25)')}
             onMouseLeave={(e) => (e.target.style.backgroundColor = 'rgb(12, 214, 12)')}
-            >
+          >
             <FontAwesomeIcon icon={faUser} style={{ marginRight: '5px' }} />
             Criar
-            </button>
-            {/* <div id='texto-filtrar'>
+          </button>
+          {/* <div id='texto-filtrar'>
               <strong>Filtrar: </strong><input type="text" onChange={handleFilter}/>
             </div> */}
         </div>
       </div><br />
       <div className="custom-table-container">
-        <DataTable 
+        <DataTable
           columns={columns}
           data={products}
           customStyles={customStyles}
@@ -382,61 +382,61 @@ function App() {
       >
         <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Cadastro de Produto</h2>
         <form>
-        <div className="inputs">
+          <div className="inputs">
             <div className="input">
-                <FontAwesomeIcon icon={faUser} className='img'/>
-                {/* <input type="text" name="nome" id="nome" placeholder="Nome Produto" maxLength="60" /> */}
-                <input 
-                type="text" 
-                name="nome" 
-                id="nome" 
-                placeholder="Nome Produto" 
-                maxLength="60" 
-                value={formData.nome} 
+              <FontAwesomeIcon icon={faUser} className='img' />
+              {/* <input type="text" name="nome" id="nome" placeholder="Nome Produto" maxLength="60" /> */}
+              <input
+                type="text"
+                name="nome"
+                id="nome"
+                placeholder="Nome Produto"
+                maxLength="60"
+                value={formData.nome}
                 onChange={handleInputChange} />
             </div>
             <div className="input">
-                <FontAwesomeIcon icon={faInfoCircle} className='img' />
-                {/* <input type="text" name="descricao" id="descricao" placeholder="Descrição" /> */}
-                <input
-                  type="text"
-                  name="descricao"
-                  id="descricao"
-                  placeholder="Descrição"
-                  value={formData.descricao}
-                  onChange={handleInputChange}
-                />
+              <FontAwesomeIcon icon={faInfoCircle} className='img' />
+              {/* <input type="text" name="descricao" id="descricao" placeholder="Descrição" /> */}
+              <input
+                type="text"
+                name="descricao"
+                id="descricao"
+                placeholder="Descrição"
+                value={formData.descricao}
+                onChange={handleInputChange}
+              />
             </div>
             <div className="input">
-                <FontAwesomeIcon icon={faMoneyBill} className='img' />
-                <CurrencyInput
-                  name="precoUnitario"
-                  id="precoUnitario"
-                  placeholder="Preço"
-                  decimalSeparator=","
-                  thousandSeparator="."
-                  prefix="R$ "
-                  autoFocus={false}
-                  value={formData.precoUnitario}
-                  onChange={handleInputChange}
-                />
+              <FontAwesomeIcon icon={faMoneyBill} className='img' />
+              <CurrencyInput
+                name="precoUnitario"
+                id="precoUnitario"
+                placeholder="Preço"
+                decimalSeparator=","
+                thousandSeparator="."
+                prefix="R$ "
+                autoFocus={false}
+                value={formData.precoUnitario}
+                onChange={handleInputChange}
+              />
             </div>
             <div className="input">
-                <FontAwesomeIcon icon={faTags} className='img' />
-                {/* <input type="text" name="categoria" id="categoria" placeholder="Categoria" /> */}
-                <select
-                  name="categoriaId"
-                  id="categoriaId"
-                  value={categoriaSelecionada}
-                  onChange={handleCategoriaChange}
-                >
-                  <option value="">Clique para selecionar uma categoria</option>
-                  {categorias.map((categoria) => (
-                    <option key={categoria.id} value={categoria.id}>
-                      {categoria.nome}
-                    </option>
-                  ))}
-                </select>
+              <FontAwesomeIcon icon={faTags} className='img' />
+              {/* <input type="text" name="categoria" id="categoria" placeholder="Categoria" /> */}
+              <select
+                name="categoriaId"
+                id="categoriaId"
+                value={categoriaSelecionada}
+                onChange={handleCategoriaChange}
+              >
+                <option value="">Clique para selecionar uma categoria</option>
+                {categorias.map((categoria) => (
+                  <option key={categoria.id} value={categoria.id}>
+                    {categoria.nome}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="input">
               <FontAwesomeIcon icon={faImage} className='img' />
@@ -449,10 +449,10 @@ function App() {
                 onChange={handleInputChange}
               />
             </div>
-        </div>
+          </div>
 
         </form>
-        
+
         <div className="modal-buttons">
           <button
             id="botao-cancelar"

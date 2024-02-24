@@ -31,17 +31,17 @@ export const LoginCadastro = () => {
 
   const handleAuthentication = async (userData) => {
     setIsLoading(true);
-  
+
     try {
       const response = await axios.post(
         action === "Login"
-          ? 'http://localhost:5009/api/Usuario/login'
-          : 'http://localhost:5009/api/Usuario/cadastro',
+          ? 'http://localhost:5010/api/User/login'
+          : 'http://localhost:5010/api/User/register',
         userData
       );
       console.log(action === "Login" ? 'Login bem-sucedido!' : 'Cadastro realizado com sucesso!', response.data);
       setToken(response.data.token);
-      const userFullName = response.data.usuario.nomeCompleto || userData.nomeCompleto;
+      const userFullName = response.data.user.nomeCompleto || userData.nomeCompleto;
       const userDataToSave = { nomeCompleto: userFullName };
       saveUserDataAndToken(userDataToSave, response.data.token);
       navigate('/', { state: { nomeUsuario: userFullName } });
@@ -51,12 +51,12 @@ export const LoginCadastro = () => {
       setIsLoading(false);
     }
   };
-  
+
   const saveUserDataAndToken = (userData, token) => {
     localStorage.setItem('userData', JSON.stringify(userData));
     localStorage.setItem('token', token);
   };
-  
+
   const handleSubmitCadastro = async () => {
     setIsLoading(true);
     try {
@@ -69,10 +69,10 @@ export const LoginCadastro = () => {
         isActive: true,
         tipoUsuarioId: 2,
       };
-      const response = await axios.post('http://localhost:5009/api/Usuario/cadastro', novoUsuario);
+      const response = await axios.post('http://localhost:5010/api/User/register', novoUsuario);
       console.log('Cadastro realizado com sucesso!', response.data);
       setToken(response.data.token);
-      const userFullName = response.data?.usuario?.nomeCompleto || novoUsuario.nomeCompleto;
+      const userFullName = response.data?.user?.nomeCompleto || novoUsuario.nomeCompleto;
       const userDataToSave = { nomeCompleto: userFullName };
       saveUserDataAndToken(userDataToSave, response.data.token);
       navigate('/', { state: { nomeUsuario: userFullName } });
@@ -82,10 +82,10 @@ export const LoginCadastro = () => {
       setIsLoading(false);
     }
 
-  };  
-      const handleSubmit = async () => {
-      const usuario = { email, senha };
-      await handleAuthentication(usuario);
+  };
+  const handleSubmit = async () => {
+    const usuario = { email, senha };
+    await handleAuthentication(usuario);
   };
 
   return (
@@ -113,7 +113,7 @@ export const LoginCadastro = () => {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-            
+
             <div className="input">
               <img src={senha_icon} alt="" />
               <input

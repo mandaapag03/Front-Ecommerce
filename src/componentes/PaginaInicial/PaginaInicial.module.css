@@ -35,6 +35,12 @@
   .productCard p {
       font-size: 1rem;
       margin: 10px 0;
+      /*  Limita texto no card*/
+      max-width: 100ch;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
   }
 
   .header {
