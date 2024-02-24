@@ -41,7 +41,7 @@ export const LoginCadastro = () => {
       );
       console.log(action === "Login" ? 'Login bem-sucedido!' : 'Cadastro realizado com sucesso!', response.data);
       setToken(response.data.token);
-      const userFullName = response.data.usuario.nomeCompleto || userData.nomeCompleto;
+      const userFullName = response.data.user.nomeCompleto || userData.nomeCompleto;
       const userDataToSave = { nomeCompleto: userFullName };
       saveUserDataAndToken(userDataToSave, response.data.token);
       navigate('/', { state: { nomeUsuario: userFullName } });
@@ -72,7 +72,7 @@ export const LoginCadastro = () => {
       const response = await axios.post('http://localhost:5010/api/User/register', novoUsuario);
       console.log('Cadastro realizado com sucesso!', response.data);
       setToken(response.data.token);
-      const userFullName = response.data?.usuario?.nomeCompleto || novoUsuario.nomeCompleto;
+      const userFullName = response.data?.user?.nomeCompleto || novoUsuario.nomeCompleto;
       const userDataToSave = { nomeCompleto: userFullName };
       saveUserDataAndToken(userDataToSave, response.data.token);
       navigate('/', { state: { nomeUsuario: userFullName } });
