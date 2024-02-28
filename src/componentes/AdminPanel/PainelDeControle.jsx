@@ -12,10 +12,12 @@ import cpf_icon from '../Imgs/cpf_icon.png';
 import InputMask from 'react-input-mask';
 import telefone_icon from '../Imgs/telefone_icon.png'
 import axios from 'axios'
+import { environment } from '../../environment/environment';
 
 
 function App() {
   const [isLoading, setIsLoading] = useState(false);
+  const user_api = environment.user_api_url + '/api/User';
 
 
   const handleSave = async () => {
@@ -32,7 +34,7 @@ function App() {
       };
 
       setTimeout(async () => {
-        const response = await axios.post('http://localhost:5010/api/User/register', requestBody);
+        const response = await axios.post(user_api + '/register', requestBody);
         console.log('Resposta da API:', response.data);
         closeModal();
         window.location.reload();
@@ -87,7 +89,7 @@ function App() {
   ];
 
   useEffect(() => {
-    axios.get('http://localhost:5010/api/Usuario')
+    axios.get(user_api)
       .then((response) => {
         console.log(response.data)
         console.log('response.data')
@@ -159,7 +161,7 @@ function App() {
 
   const handleEdit = async (row) => {
     try {
-      const response = await fetch(`http://localhost:5010/api/User/find/${row.cpf}`);
+      const response = await fetch(user_api + `/find/${row.cpf}`);
       if (response.ok) {
         const userData = await response.json();
         setEditingUser(userData);
@@ -198,7 +200,7 @@ function App() {
     setIsLoading(true);
     try {
       setTimeout(async () => {
-        const response = await fetch('http://localhost:5010/api/User/update', {
+        const response = await fetch(user_api + '/update', {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -230,7 +232,7 @@ function App() {
     setIsLoading(true);
     try {
       setTimeout(async () => {
-        const response = await fetch(`http://localhost:5010/api/User/inactivate/${userIdToInactivate}`, {
+        const response = await fetch(user_api + `/inactivate/${userIdToInactivate}`, {
           method: 'PUT',
         });
 

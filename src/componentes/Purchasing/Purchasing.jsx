@@ -5,6 +5,7 @@ import Modal from 'react-modal';
 import InputMask from 'react-input-mask';
 import endereco_icon from '../Imgs/endereco_icon.png';
 import axios from 'axios';
+import { environment } from '../../environment/environment';
 
 const Purchasing = ({ handleClose, token }) => {
   const navigate = useNavigate();
@@ -17,9 +18,13 @@ const Purchasing = ({ handleClose, token }) => {
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
 
+  const address_api = environment.user_api_url + '/api/Address';
+  const payment_method_api = environment.payment_api_url + '/api/PaymentMethod';
+  const shipping_api = environment.order_api_url + '/api/Shipping';
+
   const fetchPaymentMethods = async () => {
     try {
-      const response = await axios.get('http://localhost:5228/api/PaymentMethod');
+      const response = await axios.get(payment_method_api);
       setPaymentMethods(response.data);
     } catch (error) {
       console.error('Erro formas de pagamento, emynem esta triste:', error);
@@ -37,7 +42,7 @@ const Purchasing = ({ handleClose, token }) => {
 
   const fetchShippingMethods = async () => {
     try {
-      const response = await axios.get('http://localhost:5053/api/Shipping');
+      const response = await axios.get(shipping_api);
       setShippingMethods(response.data);
     } catch (error) {
       console.error('Erro de envio:', error);
@@ -58,7 +63,7 @@ const Purchasing = ({ handleClose, token }) => {
       const token = localStorage.getItem('token');
       if (token) {
         const userId = getTokenPayload(token).nameid;
-        const response = await axios.get(`http://localhost:5010/api/Address/list/${userId}`);
+        const response = await axios.get(address_api + `/list/${userId}`);
         setAddresses(response.data);
       } else {
         console.error('Token não encontrado. user sem chance chefe.');
@@ -124,7 +129,7 @@ const Purchasing = ({ handleClose, token }) => {
       if (token) {
         formData.idUsuario = getTokenPayload(token).nameid;
         console.log('ID do user:', formData.idUsuario);
-        const response = await axios.post(`http://localhost:5010/api/Address/register/${formData.idUsuario}`, formData);
+        const response = await axios.post(address_api + `/register/${formData.idUsuario}`, formData);
         console.log('deu bom !', response.data);
         handleAddressModalClose();
         window.location.reload();

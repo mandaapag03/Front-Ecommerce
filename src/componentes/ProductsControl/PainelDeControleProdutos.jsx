@@ -6,11 +6,13 @@ import { faEdit, faBan } from '@fortawesome/free-solid-svg-icons';
 import { faUser, faInfoCircle, faMoneyBill, faTags, faImage } from '@fortawesome/free-solid-svg-icons';
 import Modal from 'react-modal';
 import CurrencyInput from 'react-currency-masked-input';
-
+import { environment } from '../../environment/environment';
 
 function App() {
 
   //#region Dados Grid
+  const product_api = environment.product_api_url + '/api/Product';
+  const product_api_category = environment.product_api_url + '/api/Category';
 
   const [products, setProducts] = useState([]);
 
@@ -61,7 +63,7 @@ function App() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const response = await fetch('http://localhost:5051/api/Product');
+        const response = await fetch(product_api);
         if (response.ok) {
           const productsData = await response.json();
           console.log(productsData)
@@ -149,7 +151,7 @@ function App() {
   useEffect(() => {
     async function fetchCategorias() {
       try {
-        const response = await fetch('http://localhost:5051/api/Category');
+        const response = await fetch(product_api_category);
         if (response.ok) {
           const categoriasData = await response.json();
           setCategorias(categoriasData);
@@ -211,7 +213,7 @@ function App() {
     try {
       setTimeout(async () => {
 
-        const response = await fetch('http://localhost:5051/api/Product/register', {
+        const response = await fetch(product_api + '/register', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -267,7 +269,7 @@ function App() {
     setIsLoading(true);
     try {
       setTimeout(async () => {
-        const response = await fetch(`http://localhost:5051/api/Product/change/${editingProduct.id}`, {
+        const response = await fetch(product_api + `/change/${editingProduct.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -309,7 +311,7 @@ function App() {
     setIsLoading(true);
     try {
       setTimeout(async () => {
-        const response = await fetch(`http://localhost:5051/api/Product/inactivate/${productIdToInactivate}`, {
+        const response = await fetch(product_api + `/inactivate/${productIdToInactivate}`, {
           method: 'PUT',
         });
 

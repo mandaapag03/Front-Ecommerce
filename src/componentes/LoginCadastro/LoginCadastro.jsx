@@ -8,6 +8,7 @@ import InputMask from 'react-input-mask';
 import telefone_icon from '../Imgs/telefone_icon.png';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { environment } from '../../environment/environment';
 
 
 export const LoginCadastro = () => {
@@ -19,6 +20,7 @@ export const LoginCadastro = () => {
   const [nome, setNome] = useState('');
   const [cpf, setCpf] = useState('');
   const [telefone, setTelefone] = useState('');
+  const user_api = environment.user_api_url + '/api/User'
 
   const navigate = useNavigate();
 
@@ -35,8 +37,8 @@ export const LoginCadastro = () => {
     try {
       const response = await axios.post(
         action === "Login"
-          ? 'http://localhost:5010/api/User/login'
-          : 'http://localhost:5010/api/User/register',
+          ? user_api + '/login'
+          : user_api + '/register',
         userData
       );
       console.log(action === "Login" ? 'Login bem-sucedido!' : 'Cadastro realizado com sucesso!', response.data);
@@ -69,7 +71,7 @@ export const LoginCadastro = () => {
         isActive: true,
         tipoUsuarioId: 2,
       };
-      const response = await axios.post('http://localhost:5010/api/User/register', novoUsuario);
+      const response = await axios.post(user_api + '/register', novoUsuario);
       console.log('Cadastro realizado com sucesso!', response.data);
       setToken(response.data.token);
       const userFullName = response.data?.user?.nomeCompleto || novoUsuario.nomeCompleto;

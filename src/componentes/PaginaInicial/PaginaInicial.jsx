@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import Modal from 'react-modal';
 import { faSignOutAlt, faUser, faHeart } from '@fortawesome/free-solid-svg-icons';
+import { environment } from '../../environment/environment';
 
 
 const customModalStyles = {
@@ -25,6 +26,9 @@ const ProductList = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [favoritos, setFavoritos] = useState([]);
+  const order_api_favorites = environment.order_api_url + '/api/Favorites';
+  const order_api_cart = environment.order_api_url + '/api/Cart';
+  const product_api = environment.product_api_url + '/api/Product';
 
   const [favoritosModalIsOpen, setFavoritosModalIsOpen] = useState(false);
   const isFavorito = (produto) => {
@@ -59,8 +63,8 @@ const ProductList = () => {
       const usuarioId = payload.nameid;
 
       const apiUrl = isFavorito(produto)
-        ? 'http://localhost:5053/api/Favorites/item/delete'
-        : 'http://localhost:5053/api/Favorites/item/add';
+        ? order_api_favorites + '/item/delete'
+        : order_api_favorites + '/item/add';
 
       const response = await fetch(apiUrl, {
         method: isFavorito(produto) ? 'DELETE' : 'POST',
@@ -91,7 +95,7 @@ const ProductList = () => {
       const payload = getTokenPayload(token);
       const usuarioId = payload.nameid;
 
-      const response = await fetch('http://localhost:5053/api/Favorites/item/delete', {
+      const response = await fetch(order_api_favorites + '/item/delete', {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -161,7 +165,7 @@ const ProductList = () => {
         const payload = getTokenPayload(token);
         const usuarioId = payload.nameid;
         console.log('Usuario ID:', usuarioId);
-        const response = await fetch('http://localhost:5053/api/Cart/item/add', {
+        const response = await fetch(order_api_cart + '/item/add', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -221,7 +225,7 @@ const ProductList = () => {
           try {
             const payload = getTokenPayload(token);
             const usuarioId = payload.nameid;
-            const apiUrl = `http://localhost:5053/api/Cart/item/delete`;
+            const apiUrl = order_api_cart + `/item/delete`;
             console.log('Dados enviados para a API (DELETE):', apiUrl);
             const response = await fetch(apiUrl, {
               method: 'DELETE',
@@ -247,7 +251,7 @@ const ProductList = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch('http://localhost:5051/api/Product');
+      const response = await fetch(product_api);
       const data = await response.json();
       setProducts(data);
     } catch (error) {
