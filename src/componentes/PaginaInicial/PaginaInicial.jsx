@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate } from 'react-router-dom';
 import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import Modal from 'react-modal';
-import { faSignOutAlt, faUser, faHeart } from '@fortawesome/free-solid-svg-icons';
+import { faSignOutAlt, faUser, faHeart, faClipboardList } from '@fortawesome/free-solid-svg-icons';
 import { environment } from '../../environment/environment';
 
 
@@ -24,6 +24,8 @@ const customModalStyles = {
 const ProductList = () => {
   const [products, setProducts] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [meusPedidosModalIsOpen, setMeusPedidosModalIsOpen] = useState(false);
+  const [meusPedidosItens, setMeusPedidosItens] = useState([]);
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [favoritos, setFavoritos] = useState([]);
   const order_api_favorites = environment.order_api_url + '/api/Favorites';
@@ -123,7 +125,20 @@ const ProductList = () => {
     setFavoritosModalIsOpen(false);
   };
 
+  const openMeusPedidosModal = () => {
+    setMeusPedidosItens(cart);
+    setMeusPedidosModalIsOpen(true);
+  };
 
+  const closeMeusPedidosModal = () => {
+    setMeusPedidosModalIsOpen(false);
+  };
+
+  const handleCancelOrder = (orderId) => {
+    const updatedOrders = meusPedidosItens.filter((order) => order.id !== orderId);
+    setMeusPedidosItens(updatedOrders);
+  };
+  
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
   const toggleDropdown = () => {
@@ -143,7 +158,29 @@ const ProductList = () => {
     navigate('/');
   };
 
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState(() => {
+    const savedCart = localStorage.getItem('cart');
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
+  
+   const loadCartFromLocalStorage = () => {
+    const savedCart = localStorage.getItem('cart');
+    if (savedCart) {
+      setCart(JSON.parse(savedCart));
+    }
+  };
+
+  const saveCartToLocalStorage = (updatedCart) => {
+    localStorage.setItem('cart', JSON.stringify(updatedCart));
+  };
+
+  useEffect(() => {
+    loadCartFromLocalStorage();
+  }, []);
+
+  useEffect(() => {
+    saveCartToLocalStorage(cart);
+  }, [cart]);
 
   const handleAddToCart = async (product) => {
     const existingProduct = cart.find((item) => item.id === product.id);
@@ -215,6 +252,9 @@ const ProductList = () => {
           }
           : product
       );
+
+      setCart(updatedCart);
+      saveCartToLocalStorage(updatedCart);
 
       const updatedCartWithoutZeroQuantities = updatedCart.filter((product) => product.quantidade > 0);
       setCart(updatedCartWithoutZeroQuantities);
@@ -297,6 +337,10 @@ const ProductList = () => {
                 <button>
                   <FontAwesomeIcon icon={faHeart} />
                   <span onClick={openFavoritosModal}>Favoritos</span>
+                </button>
+                <button>
+                  <FontAwesomeIcon icon={faClipboardList} />
+                  <span onClick={openMeusPedidosModal}>Meus Pedidos</span>
                 </button>
                 <button onClick={handleLogoff}>
                   <FontAwesomeIcon icon={faSignOutAlt} />
@@ -395,6 +439,37 @@ const ProductList = () => {
           </ul>
         </div>
       </Modal>
+      <Modal isOpen={meusPedidosModalIsOpen} onRequestClose={closeMeusPedidosModal} contentLabel="Modal Meus Pedidos" style={customModalStyles}>
+  <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Meus Pedidos</h2>
+  <button className={styles.closeButton} onClick={closeMeusPedidosModal}>
+    X
+  </button>
+  <div className="meus-pedidos-container">
+    <ul className={styles.cartItemList}>
+      {meusPedidosItens.map((product) => (
+        <li key={product.id} className={styles.cartItem}>
+          <img src={product.foto} alt={product.nome} />
+          <h3>{product.nome}</h3>
+          <p>Preço Total: {`R$${product.precoTotal.toFixed(2)}`}</p>
+          <p>Quantidade: {product.quantidade}</p>
+          <div>
+          <button
+           className={styles.cancelPedidoButton}
+           onClick={() => handleCancelOrder(product.id)}
+          >
+              Cancelar Pedido
+          </button>
+          <button className={styles.viewProductButton}>
+              Ver Status do Pedido
+          </button>
+          <button className={styles.closeButton} onClick={closeMeusPedidosModal}>
+          </button>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+</Modal>
     </div>
   );
 };

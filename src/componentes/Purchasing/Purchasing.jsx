@@ -7,7 +7,7 @@ import endereco_icon from '../Imgs/endereco_icon.png';
 import axios from 'axios';
 import { environment } from '../../environment/environment';
 
-const Purchasing = ({ handleClose, token }) => {
+const Purchasing = ({ handleClose, token, cart, updateCart }) => {
   const navigate = useNavigate();
   const [isAddressModalOpen, setAddressModalOpen] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -17,10 +17,17 @@ const Purchasing = ({ handleClose, token }) => {
   const [selectedShippingMethod, setSelectedShippingMethod] = useState(null);
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
+  const [userSelections, setUserSelections] = useState({
+  address: null,
+  shippingMethod: null,
+  paymentMethod: null,
+  });
+  
 
   const address_api = environment.user_api_url + '/api/Address';
   const payment_method_api = environment.payment_api_url + '/api/PaymentMethod';
   const shipping_api = environment.order_api_url + '/api/Shipping';
+  const order_api = environment.order_api_url + '/api/Order';
 
   const fetchPaymentMethods = async () => {
     try {
@@ -35,9 +42,11 @@ const Purchasing = ({ handleClose, token }) => {
       fetchPaymentMethods();
     }
   }, [progress]);
+  
 
   const handleSelectPaymentMethod = (methodId) => {
     setSelectedPaymentMethod(methodId);
+    setUserSelections({ ...userSelections, paymentMethod: formatPaymentMethod(paymentMethods.find(method => method.id === methodId)) });
   };
 
   const fetchShippingMethods = async () => {
@@ -56,28 +65,121 @@ const Purchasing = ({ handleClose, token }) => {
 
   const handleSelectShippingMethod = (methodId) => {
     setSelectedShippingMethod(methodId);
+    setUserSelections({ ...userSelections, shippingMethod: formatShippingMethod(shippingMethods.find(method => method.id === methodId)) });
   };
 
-  const fetchUserAddresses = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      if (token) {
-        const userId = getTokenPayload(token).nameid;
-        const response = await axios.get(address_api + `/list/${userId}`);
-        setAddresses(response.data);
-      } else {
-        console.error('Token não encontrado. user sem chance chefe.');
-      }
-    } catch (error) {
-      console.error('Erro ao enviar para a api:', error);
-    }
-  };
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
-    if (progress === 2) {
-      fetchUserAddresses();
-    }
-  }, [progress]);
+  const token = localStorage.getItem('token');
+  if (token) {
+  const userIdFromToken = getTokenPayload(token).nameid;
+  setUserId(userIdFromToken);
+  console.log('UserID token:', userIdFromToken);
+  }
+  }, [token]);
+  
+
+
+  const formatAddress = (address) => {
+    return `${address.logradouro}, ${address.numero}, ${address.bairro}, ${address.cidade}, ${address.uf}`;
+  };
+
+  const formatShippingMethod = (method) => {
+    return `${method.descricao} - R$ ${method.valorFrete.toFixed(2)}`;
+  };
+  
+  const formatPaymentMethod = (method) => {
+    return method.descricao;
+  };
+  
+  useEffect(() => {
+    setUserSelections({
+      ...userSelections,
+      address: selectedAddress ? formatAddress(addresses.find(address => address.id === selectedAddress)) : null,
+      shippingMethod: selectedShippingMethod ? formatShippingMethod(shippingMethods.find(method => method.id === selectedShippingMethod)) : null,
+      paymentMethod: selectedPaymentMethod ? formatPaymentMethod(paymentMethods.find(method => method.id === selectedPaymentMethod)) : null,
+      total: cart.reduce((total, product) => total + product.precoTotal, 0),
+    });
+  }, [cart, selectedAddress, addresses, selectedShippingMethod, shippingMethods, selectedPaymentMethod, paymentMethods]);
+
+  const handleConfirmarPedido = async () => {
+  const token = localStorage.getItem('token');
+  
+  if (!token) {
+    console.error('Token não encontrado.');
+    return;
+  }
+
+  const userId = parseInt(getTokenPayload(token).nameid, 10);
+  const total = cart.reduce((acc, product) => acc + product.precoTotal, 0);
+  const totalArredondado = parseFloat(total.toFixed(0));
+
+  console.log('Informações do pedido antes de enviar:', {
+    usuarioId: userId,
+    formaPagamentoId: selectedPaymentMethod,
+    formaEnvioId: selectedShippingMethod,
+    enderecoId: selectedAddress,
+    qtd_parecelas: 1,
+    total: totalArredondado,
+    itensPedido: cart.map((product) => ({
+      produtoId: product.id,
+      quantidade: product.quantidade,
+    })),
+  });
+
+  const pedidoData = {
+    usuarioId: userId,
+    formaPagamentoId: selectedPaymentMethod,
+    formaEnvioId: selectedShippingMethod,
+    enderecoId: selectedAddress,
+    qtd_parecelas: 1,
+    total: parseFloat(userSelections.total.toFixed(2)),
+    itensPedido: cart.map((product) => ({
+      produtoId: product.id,
+      quantidade: product.quantidade,
+    })),
+  };
+
+  try {
+  const response = await axios.post(order_api + '/create', pedidoData, {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  
+    console.log('Resposta da API:', response.data);
+    updateCart([]);
+  } catch (error) {
+    console.error('Erro ao confirmar o pedido:', error);
+  } finally {
+    navigate('/');
+    alert('Pedido confirmado! Obrigado pela sua compra.');
+  }
+};
+
+const fetchUserAddresses = async () => {
+  try {
+const token = localStorage.getItem('token');
+  if (token) {
+const userId = getTokenPayload(token).nameid;
+const response = await axios.get(`${address_api}/list/${userId}`);
+   setAddresses(response.data);
+} else {
+console.error('Token não encontrado.');
+}
+} catch (error) {
+console.error('Erro ao buscar endereços do usuário:', error);
+}
+};
+
+
+useEffect(() => {
+  if (progress === 2) {
+    fetchUserAddresses();
+   }
+ }, [progress]);
 
   const handleCheckpoint = (checkpointNumber) => {
     if (checkpointNumber <= 1) {
@@ -101,29 +203,30 @@ const Purchasing = ({ handleClose, token }) => {
     }
 
     setProgress(checkpointNumber);
-    const progressLine = document.getElementById('progressLine');
-    if (progressLine) {
-      progressLine.style.backgroundPosition = `${(checkpointNumber - 1) * 25}% 0%`;
-    }
-  };
+  const progressLine = document.getElementById('progressLine');
+  if (progressLine) {
+    progressLine.style.backgroundPosition = `${(checkpointNumber - 1) * 25}% 0%`;
+  }
+};
 
   useEffect(() => {
     setProgress(2);
   }, []);
   const handleSelectAddress = (address) => {
     setSelectedAddress(address.id);
+    setUserSelections({ ...userSelections, address: formatAddress(address) });
   };
   const handleModalSaveAddress = async () => {
-    const token = localStorage.getItem('token');
-    const formData = {
-      cep: document.getElementById('cep').value,
-      logradouro: document.getElementById('logradouro').value,
-      numero: parseInt(document.getElementById('numero').value),
-      bairro: document.getElementById('bairro').value,
-      cidade: document.getElementById('localidade').value,
-      uf: document.getElementById('uf').value,
-      complemento: document.getElementById('complemento').value,
-    };
+  const token = localStorage.getItem('token');
+  const formData = {
+    cep: document.getElementById('cep').value,
+    logradouro: document.getElementById('logradouro').value,
+    numero: parseInt(document.getElementById('numero').value),
+    bairro: document.getElementById('bairro').value,
+    cidade: document.getElementById('localidade').value,
+    uf: document.getElementById('uf').value,
+    complemento: document.getElementById('complemento').value,
+  };
 
     try {
       if (token) {
@@ -142,9 +245,9 @@ const Purchasing = ({ handleClose, token }) => {
   };
 
   const getTokenPayload = (token) => {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace('-', '+').replace('_', '/');
-    return JSON.parse(atob(base64));
+  const base64Url = token.split('.')[1];
+  const base64 = base64Url.replace('-', '+').replace('_', '/');
+  return JSON.parse(atob(base64));
   };
 
   const handleCadastrarEndereco = () => {
@@ -271,8 +374,24 @@ const Purchasing = ({ handleClose, token }) => {
       ) : (
         <p>{progress === 4 ? 'Nenhuma forma de pagamento disponível.' : ''}</p>
       )}
+        {progress === 5 && (
+          <div className={`${styles.checkpointContent}`}>
+            <h3>Resumo do Pedido:</h3>
+            <p><strong>Endereço:</strong> {userSelections.address ? userSelections.address : 'Selecione um endereço'}</p>
+            <p><strong>Frete:</strong> {userSelections.shippingMethod ? userSelections.shippingMethod : 'Selecione um método de envio'}</p>
+            <p><strong>Forma de Pagamento:</strong> {userSelections.paymentMethod ? userSelections.paymentMethod : 'Selecione uma forma de pagamento'}</p>
 
-      <div className={styles.addressButtons}>
+            <h4>Produtos no Carrinho:</h4>
+            {cart.map((product) => (
+              <div key={product.id}>
+                <p><strong>{product.nome}:</strong> R${product.precoTotal.toFixed(2)}</p>
+                <p>Quantidade: {product.quantidade}</p>
+                <p>Preço Total: R${product.precoTotal.toFixed(2)}</p>
+              </div>
+            ))}
+          </div>
+        )}
+              <div className={styles.addressButtons}>
         {progress === 2 && (
           <button
             className={styles.cadastrarEnderecoButton}
@@ -303,6 +422,23 @@ const Purchasing = ({ handleClose, token }) => {
             disabled={!selectedShippingMethod}
           >
             Avançar para o Pagamento
+          </button>
+        )}
+        {progress === 4 && (
+          <button
+            className={`${styles.avancarPagamentoButton} ${styles.avancarConfirmacaoButton} ${selectedPaymentMethod ? '' : styles.disabled}`}
+            onClick={() => handleCheckpoint(5)}
+            disabled={!selectedPaymentMethod}
+          >
+            Avançar para a Confirmação
+          </button>
+        )}
+        {progress === 5 && (
+          <button
+            className={`${styles.avancarPagamentoButton} ${styles.confirmarPedidoButton}`}
+            onClick={handleConfirmarPedido}
+          >
+            Confirmar Pedido
           </button>
         )}
       </div>

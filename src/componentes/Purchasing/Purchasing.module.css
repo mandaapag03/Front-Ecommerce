@@ -218,6 +218,22 @@
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
+
+.checkpointContent {
+  background-color: #f5f5f5;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 10px;
+  }
+
+.checkpointContent p {
+  margin: 5px 0;
+  }
+
+.checkpointContent h3, .checkpointContent h4 {
+  margin-bottom: 10px;
+  }
   
   
 
