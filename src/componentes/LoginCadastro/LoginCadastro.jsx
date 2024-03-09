@@ -71,12 +71,17 @@ export const LoginCadastro = () => {
         isActive: true,
         tipoUsuarioId: 2,
       };
-      const response = await axios.post(user_api + '/register', novoUsuario);
-      console.log('Cadastro realizado com sucesso!', response.data);
-      setToken(response.data.token);
-      const userFullName = response.data?.user?.nomeCompleto || novoUsuario.nomeCompleto;
+      const response_register = await axios.post(user_api + '/register', novoUsuario);
+      console.log('Cadastro realizado com sucesso!', response_register.data);
+      const response_login = await axios.post(user_api + '/login', { email: novoUsuario.email, senha: novoUsuario.senha });
+      console.log('Login realizado com sucesso!', response_login.data);
+
+      setToken(response_login.data.token);
+
+      const userFullName = response_register.data?.user?.nomeCompleto || novoUsuario.nomeCompleto;
       const userDataToSave = { nomeCompleto: userFullName };
-      saveUserDataAndToken(userDataToSave, response.data.token);
+      saveUserDataAndToken(userDataToSave, response_login.data.token);
+
       navigate('/', { state: { nomeUsuario: userFullName } });
     } catch (error) {
       console.error('Erro ao cadastrar o usuário:', error);
