@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate } from 'react-router-dom';
 import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import Modal from 'react-modal';
-import { faSignOutAlt, faUser, faHeart, faClipboardList } from '@fortawesome/free-solid-svg-icons';
+import { faSignOutAlt, faUser, faHeart, faClipboardList, faStar } from '@fortawesome/free-solid-svg-icons';
 import { environment } from '../../environment/environment';
 
 
@@ -21,13 +21,20 @@ const customModalStyles = {
   },
 };
 
-const ProductList = () => {
+const ProductList = ({ usuarioId }) => {
   const [products, setProducts] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [meusPedidosModalIsOpen, setMeusPedidosModalIsOpen] = useState(false);
   const [meusPedidosItens, setMeusPedidosItens] = useState([]);
   const [token, setToken] = useState(localStorage.getItem('token'));
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isProductModalOpen, setIsProductModalOpen] = useState(false);
+  const [comment, setComment] = useState('');
+  const [rating, setRating] = useState(0);
   const [favoritos, setFavoritos] = useState([]);
+  const [avaliacoesModalIsOpen, setAvaliacoesModalIsOpen] = useState(false);
+  const [avaliacoes, setAvaliacoes] = useState([]);
+
   const order_api_favorites = environment.order_api_url + '/api/Favorites';
   const order_api_cart = environment.order_api_url + '/api/Cart';
   const product_api = environment.product_api_url + '/api/Product';
@@ -134,8 +141,169 @@ const ProductList = () => {
     setMeusPedidosModalIsOpen(false);
   };
 
+  const openProductModal = (product) => {
+    setSelectedProduct(product);
+    setIsProductModalOpen(true);
+    fetchAvaliacoes(product.id);
+  };
+  
+  const closeProductModal = () => {
+    setSelectedProduct(null);
+    setIsProductModalOpen(false);
+  };
+
+  const handleCommentChange = (value) => {
+    setComment(value);
+  };
+
+  const openAvaliacoesModal = async () => {
+    setAvaliacoesModalIsOpen(true);
+    if (selectedProduct) {
+    try {
+  const avaliacoes = await fetchAvaliacoes(selectedProduct.id);
+    setAvaliacoes(avaliacoes);
+  } catch (error) {
+  console.error('não pingou filho, arruma isso ai:', error); 
+}
+ }
+  };
+
+  const closeAvaliacoesModal = () => {
+    setAvaliacoesModalIsOpen(false);
+  };
+
+  const [userAvaliacoesModalIsOpen, setUserAvaliacoesModalIsOpen] = useState(false);
+
+
+  const closeUserAvaliacoesModal = () => {
+  setUserAvaliacoesModalIsOpen(false);
+  };
+
+  const enviarAvaliacao = async () => {
+    try {
+  const token = localStorage.getItem('token');
+    if (token) {
+  const payload = getTokenPayload(token);
+  const usuarioId = payload.nameid;
+  const produtoId = selectedProduct.id;
+  const avaliacao = {
+  usuarioId: usuarioId,
+  produtoId: produtoId,
+  nota: rating, 
+  comentario: comment
+  };
+
+  const response = await fetch(environment.order_api_url + '/api/Rating/add', {
+  method: 'POST',
+  headers: {
+  'Content-Type': 'application/json'
+},
+  body: JSON.stringify(avaliacao)
+});
+  
+  if (response.ok) {
+  setRating(0);
+  setComment('');
+  console.log('pingou na api, tudo certo!');
+} else {
+  console.error('não pingou filho, arruma isso ai:', response.statusText);
+}
+} else {
+  console.error('Token não encontrado.');
+}
+} catch (error) {
+  console.error('não pingou filho, arruma isso ai:', error);
+}
+};
+
+  const handleRatingChange = (value) => {
+    setRating(value);
+  };
+
+  const handleAvaliacoes = async () => {
+    try {
+  const token = localStorage.getItem('token');
+    if (token) {
+  const payload = getTokenPayload(token);
+  const usuarioId = payload.nameid;
+  setUserAvaliacoesModalIsOpen(true);
+  const apiUrl = `${environment.order_api_url}/api/Rating/list/user/${usuarioId}`;
+  const response = await fetch(apiUrl);
+    if (!response.ok) {
+    throw new Error(`Erro ao buscar suas avaliações Dr.: ${response.statusText}`);
+  }
+  const avaliacoes = await response.json();
+  setAvaliacoes(avaliacoes);
+  } else {
+  console.error('Token não encontrado.');
+  }
+  } catch (error) {
+  console.error('Erro ao buscar suas avaliações Dr:', error);
+ }
+};
+
+  const fetchAvaliacoes = async (productId) => {
+    try {
+  const response = await fetch(`${environment.order_api_url}/api/Rating/list/product/${productId}`);
+      
+    if (!response.ok) {
+    throw new Error('Erro ao buscar suas avaliações Dr: ' + response.statusText);
+}
+      
+  const data = await response.json();
+   return data;
+ } catch (error) {
+   console.error('Erro ao buscar suas avaliações Dr:', error);
+   return [];
+ }
+  };
+
+   useEffect(() => {
+   if (avaliacoesModalIsOpen && selectedProduct) {
+   fetchAvaliacoes(selectedProduct.id);
+}
+}, [avaliacoesModalIsOpen, selectedProduct]);
+
+  const renderStars = () => {
+  const stars = [];
+  for (let i = 1; i <= 5; i++) {
+    stars.push(
+<span
+    key={i}
+    onClick={() => handleRatingChange(i)}
+    className={i <= rating ? styles.starFilled : styles.star}
+   >
+    &#9733;
+</span>
+);
+  }
+    return stars;
+};
+
+  const handleDeleteAvaliacao = async (avaliacaoId) => {
+  try {
+  const response = await fetch(`${environment.order_api_url}/api/Rating/delete/${avaliacaoId}`, {
+    method: 'DELETE',
+    headers: {
+    'Content-Type': 'application/json',
+    },
+  });
+
+    if (!response.ok) {
+    throw new Error('Não deu pra excluir, tem algo errado ai!');
+    }
+
+  const updatedAvaliacoes = avaliacoes.filter(avaliacao => avaliacao.id !== avaliacaoId);
+  setAvaliacoes(updatedAvaliacoes);
+
+  console.log('Avaliação excluída, perdeu jovem!');
+  } catch (error) {
+  console.error('Não deu pra excluir, tem algo errado ai! segue o erro jovem:', error);
+  }
+};
+
   const handleCancelOrder = (orderId) => {
-    const updatedOrders = meusPedidosItens.filter((order) => order.id !== orderId);
+  const updatedOrders = meusPedidosItens.filter((order) => order.id !== orderId);
     setMeusPedidosItens(updatedOrders);
   };
   
@@ -332,20 +500,24 @@ const ProductList = () => {
               <div className={styles.dropdownContent}>
                 <button>
                   <FontAwesomeIcon icon={faUser} />
-                  <span>Perfil</span>
+                  <span> Perfil</span>
                 </button>
                 <button>
                   <FontAwesomeIcon icon={faHeart} />
-                  <span onClick={openFavoritosModal}>Favoritos</span>
+                  <span onClick={openFavoritosModal}> Favoritos</span>
+                </button>
+                <button onClick={handleAvaliacoes}>
+                  <FontAwesomeIcon icon={faStar} />
+                  <span>Minhas Avaliações</span>
                 </button>
                 <button>
                   <FontAwesomeIcon icon={faClipboardList} />
-                  <span onClick={openMeusPedidosModal}>Meus Pedidos</span>
+                  <span onClick={openMeusPedidosModal}> Meus Pedidos</span>
                 </button>
                 <button onClick={handleLogoff}>
                   <FontAwesomeIcon icon={faSignOutAlt} />
                   <span>Sair</span>
-                </button>
+                </button> 
               </div>
             )}
           </div>
@@ -363,7 +535,7 @@ const ProductList = () => {
       </header>
       <div className={styles.productList}>
         {products.map((product) => (
-          <div key={product.id} className={styles.productCard}>
+           <div key={product.id} className={styles.productCard} onClick={() => openProductModal(product)}>
             <img src={product.foto} alt={product.nome} />
             <h2>{product.nome}</h2>
             <p>{product.descricao}</p>
@@ -470,7 +642,98 @@ const ProductList = () => {
     </ul>
   </div>
 </Modal>
+<Modal isOpen={isProductModalOpen} onRequestClose={closeProductModal} contentLabel="Informações do Produto" style={customModalStyles}>
+        {selectedProduct && (
+        <div className={styles.productDetails}>
+        <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Informações do Produto</h2>
+        <img src={selectedProduct.foto} alt={selectedProduct.nome} className={styles.productImage} />
+        <div className={styles.productInfo}>
+        <h2>{selectedProduct.nome}</h2>
+        <p>{selectedProduct.descricao}</p>
+        <p className={styles.priceLabel}>Preço: <span className={styles.priceValue}>R${selectedProduct.precoUnitario.toFixed(2)}</span></p>
+        <div className={styles.buttonsContainerOld}>
+        <button onClick={() => handleAddToCart(selectedProduct)} className={`${styles.buybuttonnew}`}>
+        <FontAwesomeIcon icon={faShoppingCart} />
+        Adicionar ao Carrinho
+        </button>
+        <button
+        className={`${styles.favoriteButton} ${isFavorito(selectedProduct) ? styles.favoriteActive : ''}`}
+        onClick={() => handleAddToFavoritos(selectedProduct)}
+        >
+        <div className={styles.favoriteContent}>
+        <FontAwesomeIcon icon={faHeart} className={styles.favoriteIcon} />
+        <span className={styles.favoriteLabel}>
+        {isFavorito(selectedProduct) ? 'Adicionado à Lista de Desejos' : 'Adicionar à Lista de Desejos'}
+        </span>
+        </div>
+        </button>
+        </div>
+        <div className={styles.comment}>
+        <h3>Deixe sua avaliação:</h3>
+        <div className={styles.rating}>{renderStars()}</div>
+        <textarea
+        value={comment}
+        onChange={(e) => handleCommentChange(e.target.value)}
+        className={styles.commentInput}
+        placeholder="Escreva o que achou do produto"
+        />
+        <div className={styles.buttonsContainer}>
+        <button onClick={enviarAvaliacao} className={styles.addCommentButton}>
+        Enviar Avaliação
+        </button>
+        <button onClick={openAvaliacoesModal} className={styles.verAvaliacoesButton}>
+        Ver Avaliações
+        </button>
+        </div>
+        </div>
+        </div>
+        </div>
+      )}
+        <button onClick={closeProductModal} className={styles.closeButton}>Fechar</button>
+</Modal>
+<Modal isOpen={avaliacoesModalIsOpen} onRequestClose={closeAvaliacoesModal} contentLabel="Avaliações do Produto" style={customModalStyles}>
+        <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Avaliações do Produto</h2>
+        <button onClick={closeAvaliacoesModal} className={styles.closeButton}>Fechar</button>
+        <div className={styles.avaliacoesContainer}>
+        {avaliacoes.map((avaliacao, index) => (
+        <div key={index} className={styles.cartItem}>
+        <h3>Avaliação de um Usuário Oh My Dog:</h3>
+        <div className={styles.avaliacaoStars}>
+        <h3>Nota:  {[...Array(avaliacao.nota)].map((_, index) => (
+        <span key={index} className={styles.starFilled}>&#9733;</span>
+        ))}</h3>
+        </div>
+        <h4>Comentário: {avaliacao.comentario}</h4>
+        {avaliacao.usuarioId === usuarioId && (
+        <button onClick={() => handleDeleteAvaliacao(avaliacao.id)} className={styles.deleteButton}>
+        Excluir Avaliação
+        </button>
+        )}
+        </div>
+       ))}
     </div>
+</Modal>
+<Modal isOpen={userAvaliacoesModalIsOpen} onRequestClose={closeUserAvaliacoesModal} contentLabel="Minhas Avaliações" style={customModalStyles}>
+        <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Minhas Avaliações</h2>
+        <button onClick={() => setUserAvaliacoesModalIsOpen(false)} className={styles.closeButton}>Fechar</button>
+        <div className={styles.avaliacoesContainer}>
+        {avaliacoes.map((avaliacao, index) => (
+        <div key={index} className={styles.cartItem}>
+        <h3>Minha avaliação de um Produto Oh My Dog:</h3>
+        <div className={styles.avaliacaoStars}>
+        <h3>Nota: {[...Array(avaliacao.nota)].map((_, index) => (
+        <span key={index} className={styles.starFilled}>&#9733;</span>
+        ))}</h3>
+        </div>
+        <h4>Comentário: {avaliacao.comentario}</h4>
+        <button onClick={() => handleDeleteAvaliacao(avaliacao.id)} className={styles.deleteButton}>
+        Excluir Avaliação
+        </button>
+        </div>
+        ))}
+      </div>
+</Modal>
+</div>
   );
 };
 
