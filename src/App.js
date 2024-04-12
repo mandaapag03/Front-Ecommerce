@@ -6,6 +6,7 @@ import Header from './componentes/Header';
 import PainelDeControleProdutos from './componentes/ProductsControl/PainelDeControleProdutos'
 import PaginaInicial from './componentes/PaginaInicial/PaginaInicial';
 import Purchasing from './componentes/Purchasing/Purchasing';
+import AnalyticsPanel from './componentes/AnalyticsPanel/AnalyticsPanel';
 import React, { useState, useEffect } from 'react';
 
 function App() {
@@ -65,6 +66,15 @@ function App() {
               </>
             }
           />
+          <Route
+            path="/AnalyticsPanel"
+            element={
+              <>
+                <Header  />
+                <AnalyticsPanel/>
+              </>
+            }
+            />
         </Routes>
       </Router>
     </div>

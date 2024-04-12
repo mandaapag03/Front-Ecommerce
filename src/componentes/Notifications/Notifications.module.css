@@ -1,0 +1,54 @@
+.notificationContainer {
+  position: fixed;
+  bottom: 20px;
+  right: -50px;
+}
+  
+.notificationBalloon {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  border-radius: 20px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  display: none;
+  font-size: 14px;
+  position: absolute;
+  z-index: 9999;
+  right: 50px;
+  opacity: 0;
+  transition: opacity 1.0s ease;
+}
+  
+.notificationBalloon.show {
+  display: block;
+  opacity: 1;
+}
+  
+.closeBtn {
+  cursor: pointer;
+  float: right;
+  margin-left: 8px;
+  font-size: 12px;
+  color: #AB8262;
+}
+  
+.notificationMessage {
+  margin: 0;
+}
+
+.rateButton {
+  border: none;
+  background-color: #f0f0f0;
+  color: #AB8262;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.rateButton:hover {
+  color: #703f1d;
+}
+
+.closeBtn:hover {
+  color: #703f1d;
+}

@@ -8,7 +8,7 @@ import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import Modal from 'react-modal';
 import { faSignOutAlt, faUser, faHeart, faClipboardList, faStar } from '@fortawesome/free-solid-svg-icons';
 import { environment } from '../../environment/environment';
-
+import Notifications from '../Notifications/Notifications';
 
 const customModalStyles = {
   content: {
@@ -733,6 +733,7 @@ const ProductList = ({ usuarioId }) => {
         ))}
       </div>
 </Modal>
+<Notifications/>
 </div>
   );
 };
