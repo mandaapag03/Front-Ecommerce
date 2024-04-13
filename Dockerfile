@@ -5,6 +5,7 @@ WORKDIR /OhMyDog-Web
 COPY public/ /OhMyDog-Web/public
 COPY src/ /OhMyDog-Web/src
 COPY package.json /OhMyDog-Web/
+COPY package-lock.json /OhMyDog-Web/
 
 RUN npm install
 
