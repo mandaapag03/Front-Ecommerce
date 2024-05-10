@@ -6,7 +6,8 @@ import {
   FaRegSun, 
   FaUserAlt, 
   FaChartBar,
-  FaShoppingCart
+  FaShoppingCart,
+  FaMoneyBill
 } from 'react-icons/fa';
 import SidebarItem from '../SidebarItem';
 import { useNavigate } from 'react-router-dom';
@@ -29,6 +30,11 @@ const Sidebar = ({ active }) => {
     navigate('/AnalyticsPanel');
   };
 
+  const handlePromotionsPanelClick  = () => {
+    navigate('/PromotionsPanel');
+  };
+
+
   const closeSidebar = () => {
     active(false);
   };
@@ -41,6 +47,7 @@ const Sidebar = ({ active }) => {
         <SidebarItem Icon={FaChartBar} Text="Estatísticas" onClick={handlePainelDeControleAnalyticsClick}/>
         <SidebarItem Icon={FaUserAlt} Text="Usuários" onClick={handlePainelDeControleUsuariosClick}/>
         <SidebarItem Icon={FaShoppingCart} Text="Produtos" onClick={handlePainelDeControleProdutosClick}/>
+        <SidebarItem Icon={FaMoneyBill} Text="Promoções" onClick={handlePromotionsPanelClick}/>
         <SidebarItem Icon={FaRegSun} Text="Configurações" />
       </Content>
     </Container>

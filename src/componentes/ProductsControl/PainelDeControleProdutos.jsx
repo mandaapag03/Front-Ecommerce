@@ -15,6 +15,9 @@ function App() {
   const product_api_category = environment.product_api_url + '/api/Category';
 
   const [products, setProducts] = useState([]);
+  const [promotionsList, setPromotionsList] = useState([]);
+  const [promotionsModalIsOpen, setPromotionsModalIsOpen] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState(null); 
 
   const columns = [
     {
@@ -54,6 +57,13 @@ function App() {
             onClick={() => openConfirmationModal(row.id)}
           >
             <FontAwesomeIcon icon={faBan} />
+          </button>
+          <button
+            id="botao-aplicar"
+            style={{ marginLeft: '5px' }}
+            onClick={() => openPromotionsModal(row.id)}
+          >
+            Aplicar Promoção
           </button>
         </div>
       )
@@ -106,15 +116,6 @@ function App() {
   //#endregion
 
   const [isLoading, setIsLoading] = useState(false);
-
-  // const [records, setRecords] = useState(data);
-
-  // function handleFilter(event) {
-  //   const newData = data.filter(row => {
-  //     return row.produto.toLocaleLowerCase().includes(event.target.value.toLocaleLowerCase())
-  //   })
-  //   setRecords(newData)
-  // }
 
   //#region Modal Styles
 
@@ -189,11 +190,8 @@ function App() {
     categoriaId: null,
   });
 
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-
-    const newValue = name === 'precoUnitario' ? value.replace(/[,.]/g, '').replace(',', '.') : value;
     setFormData({
       ...formData,
       [name]: value,
@@ -212,7 +210,6 @@ function App() {
     setIsLoading(true);
     try {
       setTimeout(async () => {
-
         const response = await fetch(product_api + '/register', {
           method: 'POST',
           headers: {
@@ -245,7 +242,6 @@ function App() {
     setEditingProduct(row);
     openModalEdit();
   }
-
 
   const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
 
@@ -290,7 +286,6 @@ function App() {
     }
   };
 
-
   //#endregion
 
   //#region Inativar Produto
@@ -305,6 +300,62 @@ function App() {
 
   const closeConfirmationModal = () => {
     setConfirmationModalIsOpen(false);
+  };
+
+  const applyPromotion = async (productId, promotionId) => {
+    try {
+      const response = await fetch('http://localhost:5069/api/CurrentPromotion/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          produtoId: productId,
+          promocaoId: promotionId,
+        }),
+      });
+      if (response.ok) {
+        console.log('Promoção aplicada com sucesso');
+      } else {
+        console.error('Erro ao aplicar a promoção');
+      }
+    } catch (error) {
+      console.error('Erro ao aplicar a promoção:', error);
+    }
+  };
+
+  const deletePromotion = async (productId) => {
+    try {
+      const response = await fetch(`http://localhost:5069/api/CurrentPromotion/delete/${productId}`, {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        console.log('Promoção removida com sucesso');
+      } else {
+        console.error('Erro ao remover a promoção');
+      }
+    } catch (error) {
+      console.error('Erro ao remover a promoção:', error);
+    }
+  };
+
+  const openPromotionsModal = async () => {
+    try {
+      const response = await fetch('http://localhost:5069/api/Promotion/list');
+      if (response.ok) {
+        const promotionsData = await response.json();
+        setPromotionsList(promotionsData);
+        setPromotionsModalIsOpen(true);
+      } else {
+        console.error('Erro ao buscar promoções da API');
+      }
+    } catch (error) {
+      console.error('Erro ao buscar promoções da API:', error);
+    }
+  };
+
+  const closePromotionsModal = () => {
+    setPromotionsModalIsOpen(false);
   };
 
   const handleConfirmInactivate = async () => {
@@ -328,6 +379,23 @@ function App() {
     }
   };
 
+  const fetchPromotionsList = async () => {
+    try {
+      const response = await fetch(`${environment.promotions_api_url}/api/Promotion/list`);
+      if (response.ok) {
+        const promotionsData = await response.json();
+        setPromotionsList(promotionsData);
+      } else {
+        console.error('Erro ao buscar promoções da API');
+      }
+    } catch (error) {
+      console.error('Erro ao buscar promoções da API:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPromotionsList();
+  }, []);
 
   //#endregion
 
@@ -478,11 +546,11 @@ function App() {
         contentLabel="Modal de Edição"
         style={customModalStyles}
       >
-        <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Edição de Produto</h2>
+        <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Editar Produto</h2>
         <form>
           <div className="inputs">
             <div className="input">
-              <FontAwesomeIcon icon={faUser} className="img" />
+              <FontAwesomeIcon icon={faUser} className='img' />
               <input
                 type="text"
                 name="nome"
@@ -494,7 +562,7 @@ function App() {
               />
             </div>
             <div className="input">
-              <FontAwesomeIcon icon={faInfoCircle} className="img" />
+              <FontAwesomeIcon icon={faInfoCircle} className='img' />
               <input
                 type="text"
                 name="descricao"
@@ -505,7 +573,7 @@ function App() {
               />
             </div>
             <div className="input">
-              <FontAwesomeIcon icon={faMoneyBill} className="img" />
+              <FontAwesomeIcon icon={faMoneyBill} className='img' />
               <CurrencyInput
                 name="precoUnitario"
                 id="precoUnitario"
@@ -519,7 +587,7 @@ function App() {
               />
             </div>
             <div className="input">
-              <FontAwesomeIcon icon={faTags} className="img" />
+              <FontAwesomeIcon icon={faTags} className='img' />
               <select
                 name="categoriaId"
                 id="categoriaId"
@@ -541,7 +609,7 @@ function App() {
                 name="foto"
                 id="foto"
                 placeholder="URL da Foto"
-                value={editingProduct?.foto}
+                value={editingProduct?.foto || ''}
                 onChange={handleInputChangeEdit}
               />
             </div>
@@ -549,44 +617,89 @@ function App() {
         </form>
 
         <div className="modal-buttons">
-          <button id="botao-cancelar" onClick={closeModalEdit}>
+          <button
+            id="botao-cancelar"
+            onClick={closeModalEdit}
+          >
             Cancelar
           </button>
-          <button id="botao-salvar" onClick={handleSaveEdit}>
+          <button
+            id="botao-salvar"
+            onClick={handleSaveEdit}
+          >
             Salvar
           </button>
         </div>
       </Modal>
 
-
       <Modal
         isOpen={confirmationModalIsOpen}
         onRequestClose={closeConfirmationModal}
-        contentLabel="Modal de Confirmação de Inativação"
+        contentLabel="Modal de Confirmação"
         style={customModalStylesInativar}
       >
-        <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>
-          Deseja inativar este produto?
-        </h2>
+        <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Tem certeza que deseja inativar este produto?</h2>
+
         <div className="modal-buttons">
           <button
-            id="botao-nao"
+            id="botao-cancelar"
             onClick={closeConfirmationModal}
           >
-            Não
+            Cancelar
           </button>
           <button
-            id="botao-sim"
+            id="botao-inativar"
             onClick={handleConfirmInactivate}
           >
-            Sim
+            Inativar
           </button>
         </div>
       </Modal>
 
+      <Modal
+  isOpen={promotionsModalIsOpen}
+  onRequestClose={closePromotionsModal}
+  contentLabel="Modal de Promoções"
+  style={customModalStyles}
+>
+  <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Promoções Disponíveis</h2>
+
+  <div className="promotions-container">
+    {promotionsList.map((promotion) => (
+      <div key={promotion.id} className="promotion-item">
+        <input type="checkbox" id={`promotion_${promotion.id}`} name={`promotion_${promotion.id}`} value={promotion.id} />
+        <label htmlFor={`promotion_${promotion.id}`}>{promotion.nome} - {promotion.desconto}%</label>
+      </div>
+    ))}
+  </div>
+
+  <div className="modal-buttons">
+    <button
+      id="botao-cancelar"
+      onClick={closePromotionsModal}
+    >
+      Cancelar
+    </button>
+   <button
+  id="botao-salvar"
+  onClick={applyPromotion}
+>
+  Aplicar
+</button>
+    <button
+      id="botao-cancelar"
+      onClick={() => {
+        deletePromotion(selectedProductId);
+        closePromotionsModal();
+      }}
+    >
+      Deletar Promoção
+    </button>
+  </div>
+</Modal>
 
     </div>
-  )
+  );
 }
 
 export default App;

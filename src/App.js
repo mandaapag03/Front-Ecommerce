@@ -8,6 +8,7 @@ import PaginaInicial from './componentes/PaginaInicial/PaginaInicial';
 import Purchasing from './componentes/Purchasing/Purchasing';
 import AnalyticsPanel from './componentes/AnalyticsPanel/AnalyticsPanel';
 import React, { useState, useEffect } from 'react';
+import PromotionsPanel from './componentes/Promotions/PromotionsPanel';
 
 function App() {
   const [cart, setCart] = useState(() => {
@@ -63,6 +64,15 @@ function App() {
               <>
                 <Header />
                 <PainelDeControleProdutos />
+              </>
+            }
+          />
+          <Route
+            path="/PromotionsPanel"
+            element={
+              <>
+                <Header />
+                <PromotionsPanel />
               </>
             }
           />

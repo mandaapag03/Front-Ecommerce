@@ -1,0 +1,16 @@
+.action-button-delete {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    background-color: #ff5a5f;
+    color: white;
+  }
+  
+  .action-button-delete:hover {
+    background-color: #bb272c;
+  }
+  
+
+  
